@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Star, Shield, Leaf } from 'lucide-react';
+import { ArrowRight, Star, Shield, Leaf, Mic } from 'lucide-react';
 import heroImage from '@/assets/hero-garden.jpg';
 
 const features = [
@@ -50,7 +50,7 @@ export const Hero = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4 mb-12">
+            <div className="flex flex-wrap items-center gap-4 mb-12">
               <Button variant="accent" size="xl">
                 Get Free Quote
                 <ArrowRight className="w-5 h-5" />
@@ -58,6 +58,35 @@ export const Hero = () => {
               <Button variant="heroOutline" size="xl">
                 View Our Work
               </Button>
+              
+              {/* AI Orb Prompt */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="flex items-center gap-3 ml-2"
+              >
+                <div className="relative">
+                  {/* Pulsing orb */}
+                  <motion.div
+                    className="w-12 h-12 rounded-full bg-orb-primary flex items-center justify-center cursor-pointer shadow-lg"
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    whileHover={{ scale: 1.15 }}
+                    onClick={() => {
+                      const orbButton = document.querySelector('[aria-label="Open AI assistant"]') as HTMLButtonElement;
+                      if (orbButton) orbButton.click();
+                    }}
+                  >
+                    <span className="absolute inset-0 rounded-full bg-orb-primary animate-ping opacity-30" />
+                    <Mic className="w-5 h-5 text-primary-foreground relative z-10" />
+                  </motion.div>
+                </div>
+                <div className="text-primary-foreground/90 text-sm max-w-[140px]">
+                  <p className="font-medium">Chat with Rosie</p>
+                  <p className="text-xs text-primary-foreground/70">AI assistant • Instant answers</p>
+                </div>
+              </motion.div>
             </div>
 
             {/* Trust Badges */}

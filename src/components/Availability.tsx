@@ -1,40 +1,127 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Check, X, Clock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { initClient, signIn, listUpcomingEvents, createEvent } from '@/lib/googleCalendar';
+import { toast } from 'sonner';
+
+// Assuming this is the calendar ID for availability checks (public readout)
+// Users will book on their own calendar and invite this email.
+const ADMIN_CALENDAR_ID = import.meta.env.VITE_ADMIN_CALENDAR_ID || 'admin@awe2m8.com';
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-// Simulated availability data (in real app, this would come from a backend)
-const generateAvailability = (year: number, month: number) => {
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const days: { date: number; status: 'available' | 'limited' | 'booked' }[] = [];
-  
-  for (let i = 1; i <= lastDay.getDate(); i++) {
-    const dayOfWeek = new Date(year, month, i).getDay();
-    // Weekends are always booked, some weekdays are limited
-    if (dayOfWeek === 0) {
-      days.push({ date: i, status: 'booked' });
-    } else if (dayOfWeek === 6 || Math.random() > 0.7) {
-      days.push({ date: i, status: 'limited' });
-    } else {
-      days.push({ date: i, status: 'available' });
-    }
-  }
-  
-  return { firstDay, days };
-};
+const months = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
 
 export const Availability = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const [events, setEvents] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGapiLoaded, setIsGapiLoaded] = useState(false);
 
-  const { firstDay, days } = generateAvailability(currentYear, currentMonth);
-  const startDayOfWeek = firstDay.getDay();
+  // Booking State
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [bookingTime, setBookingTime] = useState('');
+  const [bookingName, setBookingName] = useState('');
+  const [bookingPhone, setBookingPhone] = useState('');
+  const [bookingNotes, setBookingNotes] = useState('');
+  const [isBooking, setIsBooking] = useState(false);
+
+  useEffect(() => {
+    initClient((authorized) => {
+      setIsGapiLoaded(true);
+      fetchEvents(authorized);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (isGapiLoaded) {
+      // We pass true/false based on current auth, but fetching public calendar might work without auth if using API Key
+      const authInstance = window.gapi.auth2.getAuthInstance();
+      fetchEvents(authInstance.isSignedIn.get());
+    }
+  }, [currentMonth, currentYear]);
+
+  const fetchEvents = async (authorized: boolean) => {
+    setIsLoading(true);
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+
+    try {
+      // If we are authorized, we can see details. If not, we rely on public visibility or just don't show specific blocks yet
+      // Ideally we use API Key for public calendar read
+      const fetchedEvents = await listUpcomingEvents(ADMIN_CALENDAR_ID, firstDay, lastDay);
+      setEvents(fetchedEvents || []);
+    } catch (e) {
+      console.warn("Could not fetch events", e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getDayStatus = (day: number) => {
+    const date = new Date(currentYear, currentMonth, day);
+    const dayOfWeek = date.getDay();
+
+    // Weekends closed (example rule)
+    if (dayOfWeek === 0 || dayOfWeek === 6) return 'booked';
+
+    const dayEvents = events.filter((event) => {
+      const start = event.start.dateTime || event.start.date;
+      const eventDate = new Date(start);
+      return (
+        eventDate.getDate() === day &&
+        eventDate.getMonth() === currentMonth &&
+        eventDate.getFullYear() === currentYear
+      );
+    });
+
+    // Determine status based on load
+    // Simple heuristic: > 4 hours = booked
+    let totalDurationMs = 0;
+    dayEvents.forEach((event) => {
+      const start = new Date(event.start.dateTime || event.start.date).getTime();
+      const end = new Date(event.end.dateTime || event.end.date).getTime();
+      totalDurationMs += (end - start);
+    });
+    const hours = totalDurationMs / (1000 * 60 * 60);
+
+    if (hours >= 6) return 'booked';
+    if (hours > 0) return 'limited';
+    return 'available';
+  };
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+  const startDayOfWeek = firstDayOfMonth.getDay();
+
+  const days = Array.from({ length: daysInMonth }, (_, i) => ({
+    date: i + 1,
+    status: getDayStatus(i + 1),
+  }));
 
   const goToPrevMonth = () => {
     if (currentMonth === 0) {
@@ -56,7 +143,7 @@ export const Availability = () => {
     setSelectedDate(null);
   };
 
-  const getStatusStyles = (status: 'available' | 'limited' | 'booked') => {
+  const getStatusStyles = (status: string) => {
     switch (status) {
       case 'available':
         return 'bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground cursor-pointer';
@@ -64,8 +151,72 @@ export const Availability = () => {
         return 'bg-accent/10 text-accent hover:bg-accent hover:text-accent-foreground cursor-pointer';
       case 'booked':
         return 'bg-muted text-muted-foreground cursor-not-allowed';
+      default:
+        return 'bg-muted text-muted-foreground cursor-not-allowed';
     }
   };
+
+  const handleBookClick = () => {
+    setIsBookingOpen(true);
+  };
+
+  const confirmBooking = async () => {
+    setIsBooking(true);
+    try {
+      const authInstance = window.gapi.auth2.getAuthInstance();
+      if (!authInstance.isSignedIn.get()) {
+        await authInstance.signIn();
+      }
+
+      // Construct event
+      const date = new Date(currentYear, currentMonth, selectedDate!);
+      const [hours, minutes] = bookingTime.split(':').map(Number);
+
+      const startTime = new Date(date);
+      startTime.setHours(hours, minutes, 0);
+
+      const endTime = new Date(startTime);
+      endTime.setHours(hours + 1, minutes, 0);
+
+      const event = {
+        summary: `Garden Service - ${bookingName}`,
+        description: `${bookingNotes}\n\nClient Phone: ${bookingPhone}\nClient Name: ${bookingName}`,
+        start: { dateTime: startTime.toISOString() },
+        end: { dateTime: endTime.toISOString() },
+        attendees: [
+          { email: ADMIN_CALENDAR_ID }
+        ]
+      };
+
+      // Create event on USER's primary calendar
+      await createEvent('primary', event);
+
+      toast.success("Booking Request Sent!", {
+        description: "An invitation has been sent to our calendar."
+      });
+
+      setIsBookingOpen(false);
+      // Reset form
+      setBookingName('');
+      setBookingPhone('');
+      setBookingNotes('');
+      setBookingTime('');
+      setSelectedDate(null);
+
+      // Refresh availability
+      fetchEvents(true);
+
+    } catch (error) {
+      console.error("Booking error", error);
+      toast.error("Booking Failed", {
+        description: "Please permit popups for Google Sign-In or check your connection."
+      });
+    } finally {
+      setIsBooking(false);
+    }
+  };
+
+  const timeSlots = ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
 
   return (
     <section id="availability" className="py-24 bg-gradient-nature">
@@ -83,7 +234,7 @@ export const Availability = () => {
             Check Availability
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            View our calendar and find a time that works for you. We service the Northern Beaches area Monday to Saturday.
+            Select a date below to book a service. We mainly operate Monday - Friday in the Northern Beaches area.
           </p>
         </motion.div>
 
@@ -104,8 +255,9 @@ export const Availability = () => {
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <h3 className="font-serif text-2xl font-semibold text-foreground">
+              <h3 className="font-serif text-2xl font-semibold text-foreground flex items-center gap-2">
                 {months[currentMonth]} {currentYear}
+                {isLoading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
               </h3>
               <button
                 onClick={goToNextMonth}
@@ -131,7 +283,7 @@ export const Availability = () => {
               {Array.from({ length: startDayOfWeek }).map((_, i) => (
                 <div key={`empty-${i}`} className="aspect-square" />
               ))}
-              
+
               {/* Day cells */}
               {days.map((day) => (
                 <button
@@ -157,7 +309,7 @@ export const Availability = () => {
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-muted" />
-                <span className="text-sm text-muted-foreground">Fully Booked</span>
+                <span className="text-sm text-muted-foreground">Fully Booked / Closed</span>
               </div>
             </div>
 
@@ -171,14 +323,61 @@ export const Availability = () => {
                 <p className="text-foreground mb-3">
                   You selected <strong>{months[currentMonth]} {selectedDate}, {currentYear}</strong>
                 </p>
-                <Button variant="hero" size="lg">
-                  Book This Date
+                <Button variant="default" size="lg" onClick={handleBookClick}>
+                  Book Appointment
                 </Button>
               </motion.div>
             )}
           </div>
         </motion.div>
       </div>
+
+      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirm Booking</DialogTitle>
+            <DialogDescription>
+              For {months[currentMonth]} {selectedDate}, {currentYear}. Use your Google Account to send us an invite.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="time">Desired Time</Label>
+              <Select onValueChange={setBookingTime} value={bookingTime}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a time" />
+                </SelectTrigger>
+                <SelectContent>
+                  {timeSlots.map(time => (
+                    <SelectItem key={time} value={time}>{time}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="name">Your Name</Label>
+              <Input id="name" value={bookingName} onChange={(e) => setBookingName(e.target.value)} placeholder="Full Name" />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input id="phone" value={bookingPhone} onChange={(e) => setBookingPhone(e.target.value)} placeholder="Wait, we need to know who you are" />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea id="notes" value={bookingNotes} onChange={(e) => setBookingNotes(e.target.value)} placeholder="Details about your garden..." />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={confirmBooking} disabled={isBooking || !bookingTime || !bookingName}>
+              {isBooking ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              {isBooking ? 'Booking...' : 'Sign In with Google & Book'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

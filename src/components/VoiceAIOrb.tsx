@@ -26,7 +26,7 @@ export const VoiceAIOrb = () => {
         <span className="absolute inset-0 rounded-full bg-orb-primary animate-orb-ripple" />
         <span className="absolute inset-0 rounded-full bg-orb-primary animate-orb-ripple" style={{ animationDelay: '0.5s' }} />
         <span className="absolute inset-0 rounded-full bg-orb-primary animate-orb-ripple" style={{ animationDelay: '1s' }} />
-        
+
         {/* Icon */}
         <motion.div
           animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -53,7 +53,7 @@ export const VoiceAIOrb = () => {
           >
             {/* Header */}
             <div className="bg-primary p-5 text-primary-foreground">
-              <h3 className="font-serif text-xl font-semibold mb-1">Hi, I'm Rosie! 🌿</h3>
+              <h3 className="font-serif text-xl font-semibold mb-1">Hi, I'm Tom! 🌿</h3>
               <p className="text-sm text-primary-foreground/80">
                 Your Rob Gardens AI assistant. How can I help you today?
               </p>
@@ -61,31 +61,17 @@ export const VoiceAIOrb = () => {
 
             {/* Content */}
             <div className="p-5 space-y-4">
-              {/* Voice AI Option */}
-              <motion.button
-                onClick={handleCallClick}
-                className={`w-full p-4 rounded-xl flex items-center gap-4 transition-all duration-300 ${
-                  isListening 
-                    ? 'bg-accent text-accent-foreground' 
-                    : 'bg-primary/5 hover:bg-primary/10 text-foreground'
-                }`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              {/* Voice AI Option - Real Widget */}
+              <div
+                data-widget-key="e56e8963-7795-401e-893f-81dc59768f80"
+                className="w-full flex items-center justify-center min-h-[80px]"
               >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  isListening ? 'bg-accent-foreground/20 animate-orb-pulse' : 'bg-primary/10'
-                }`}>
-                  <Mic className={`w-6 h-6 ${isListening ? 'text-accent-foreground' : 'text-primary'}`} />
-                </div>
-                <div className="text-left">
-                  <p className="font-medium">
-                    {isListening ? 'Listening...' : 'Talk to Rosie'}
-                  </p>
-                  <p className="text-sm opacity-70">
-                    {isListening ? 'Click to stop' : 'Voice assistant'}
-                  </p>
-                </div>
-              </motion.button>
+                {/* The script will inject the widget here. 
+                     We keep the fallback/loading state visually consistent if needed, 
+                     but typically the widget replaces this. 
+                     If the widget is an overlay, this div acts as the anchor. 
+                 */}
+              </div>
 
               {/* Phone Option */}
               <a

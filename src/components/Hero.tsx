@@ -45,7 +45,7 @@ export const Hero = () => {
 
             {/* Subheadline */}
             <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-xl">
-              Specializing in trimming & maintenance. From garden care to cleanups and repairs, 
+              Specializing in trimming & maintenance. From garden care to cleanups and repairs,
               we take great pride in transforming outdoor spaces.
             </p>
 
@@ -58,7 +58,7 @@ export const Hero = () => {
               <Button variant="heroOutline" size="xl">
                 View Our Work
               </Button>
-              
+
               {/* AI Orb Prompt */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -83,7 +83,7 @@ export const Hero = () => {
                   </motion.div>
                 </div>
                 <div className="text-primary-foreground/90 text-sm max-w-[140px]">
-                  <p className="font-medium">Chat with Rosie</p>
+                  <p className="font-medium">Chat with Tom</p>
                   <p className="text-xs text-primary-foreground/70">AI assistant • Instant answers</p>
                 </div>
               </motion.div>

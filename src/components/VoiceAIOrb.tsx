@@ -5,6 +5,7 @@ import { Mic, X, Phone, MessageCircle } from 'lucide-react';
 export const VoiceAIOrb = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
 
   const handleCallClick = () => {
     // In production, this would initiate a voice AI call
@@ -76,17 +77,59 @@ export const VoiceAIOrb = () => {
 
         {/* Content */}
         <div className="p-5 space-y-4">
-          {/* Voice AI Option - Real Widget */}
-          <div className="w-full flex flex-col items-center gap-2 mb-2">
-            <p className="font-medium text-foreground">Talk to me now</p>
-            <div className="w-full flex items-center justify-center overflow-hidden py-2" style={{ minHeight: '80px' }}>
-              <div
-                data-widget-key="e56e8963-7795-401e-893f-81dc59768f80"
-                className="transform scale-90 origin-center"
-                style={{ maxHeight: '100px' }}
-              >
-                {/* The script will inject the widget here. */}
-              </div>
+          {/* Voice AI Option - Custom Trigger */}
+          <button
+            onClick={() => {
+              setIsConnecting(true);
+              const widget = document.querySelector('.wcw-state-container') as HTMLElement;
+              if (widget) {
+                widget.click();
+                // Reset connecting state after 5 seconds (fallback)
+                setTimeout(() => setIsConnecting(false), 5000);
+              }
+            }}
+            className={`w-full p-4 rounded-xl flex items-center gap-4 text-foreground transition-all text-left relative overflow-hidden ${isConnecting
+                ? 'bg-primary/10 ring-2 ring-primary/50 animate-pulse'
+                : 'bg-primary/5 hover:bg-primary/10'
+              }`}
+          >
+            {/* Pulsing border effect when connecting */}
+            {isConnecting && (
+              <motion.div
+                className="absolute inset-0 border-2 border-primary rounded-xl"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
+            )}
+
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center relative z-10">
+              {isConnecting ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                >
+                  <Mic className="w-6 h-6 text-primary" />
+                </motion.div>
+              ) : (
+                <Mic className="w-6 h-6 text-primary" />
+              )}
+            </div>
+            <div className="relative z-10">
+              <p className="font-medium">
+                {isConnecting ? 'Connecting...' : 'Talk to me now'}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {isConnecting ? 'Please wait' : 'Voice assistant'}
+              </p>
+            </div>
+          </button>
+
+          {/* Hidden Widget Container - kept in DOM for script to initialize */}
+          <div className="absolute opacity-0 pointer-events-none" aria-hidden="true" style={{ width: 0, height: 0, overflow: 'hidden' }}>
+            <div
+              data-widget-key="e56e8963-7795-401e-893f-81dc59768f80"
+            >
+              {/* The script will inject the widget here. */}
             </div>
           </div>
 

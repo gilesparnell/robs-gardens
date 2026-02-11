@@ -62,15 +62,18 @@ export const VoiceAIOrb = () => {
             {/* Content */}
             <div className="p-5 space-y-4">
               {/* Voice AI Option - Real Widget */}
-              <div
-                data-widget-key="e56e8963-7795-401e-893f-81dc59768f80"
-                className="w-full flex items-center justify-center min-h-[80px]"
-              >
-                {/* The script will inject the widget here. 
-                     We keep the fallback/loading state visually consistent if needed, 
-                     but typically the widget replaces this. 
-                     If the widget is an overlay, this div acts as the anchor. 
-                 */}
+              {/* Voice AI Option - Real Widget */}
+              <div className="w-full flex flex-col items-center gap-2 mb-2">
+                <p className="font-medium text-foreground">Talk to me now</p>
+                <div className="w-full flex items-center justify-center overflow-hidden py-2">
+                  <div
+                    data-widget-key="e56e8963-7795-401e-893f-81dc59768f80"
+                    className="transform scale-90 origin-center"
+                    style={{ maxHeight: '100px' }}
+                  >
+                    {/* The script will inject the widget here. */}
+                  </div>
+                </div>
               </div>
 
               {/* Phone Option */}
@@ -82,7 +85,7 @@ export const VoiceAIOrb = () => {
                   <Phone className="w-6 h-6 text-primary" />
                 </div>
                 <div className="text-left">
-                  <p className="font-medium">Try me on 0415 840 985</p>
+                  <p className="font-medium">Try me on</p>
                   <p className="text-sm text-muted-foreground">0415 840 985</p>
                 </div>
               </a>

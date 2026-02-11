@@ -66,11 +66,25 @@ export const Hero = () => {
                 transition={{ duration: 0.6, delay: 0.5 }}
                 className="flex items-center gap-3 ml-2"
               >
-                <div
-                  data-widget-key="e56e8963-7795-401e-893f-81dc59768f80"
-                  className="w-full flex items-center justify-center min-h-[50px] min-w-[50px]"
-                >
-                  {/* Widget will be injected here */}
+                <div className="relative">
+                  {/* Pulsing orb */}
+                  <motion.div
+                    className="w-12 h-12 rounded-full bg-orb-primary flex items-center justify-center cursor-pointer shadow-lg"
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    whileHover={{ scale: 1.15 }}
+                    onClick={() => {
+                      const orbButton = document.querySelector('[aria-label="Open AI assistant"]') as HTMLButtonElement;
+                      if (orbButton) orbButton.click();
+                    }}
+                  >
+                    <span className="absolute inset-0 rounded-full bg-orb-primary animate-ping opacity-30" />
+                    <Mic className="w-5 h-5 text-primary-foreground relative z-10" />
+                  </motion.div>
+                </div>
+                <div className="text-primary-foreground/90 text-sm max-w-[140px]">
+                  <p className="font-medium">Chat with Tom</p>
+                  <p className="text-xs text-primary-foreground/70">AI assistant • Instant answers</p>
                 </div>
               </motion.div>
             </div>

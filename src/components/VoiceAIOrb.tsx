@@ -41,79 +41,91 @@ export const VoiceAIOrb = () => {
         </motion.div>
       </motion.button>
 
-      {/* Expanded Panel */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            transition={{ duration: 0.3 }}
-            className="fixed bottom-28 right-6 z-50 w-80 bg-card rounded-2xl shadow-elevated border border-border overflow-hidden"
-          >
-            {/* Header */}
-            <div className="bg-primary p-5 text-primary-foreground">
-              <h3 className="font-serif text-xl font-semibold mb-1">Hi, I'm Tom! 🌿</h3>
-              <p className="text-sm text-primary-foreground/80">
-                I'm Rob's AI Virtual Assistant. How can I help you today?
-              </p>
-            </div>
+      {/* Expanded Panel - Always rendered but hidden when closed to keep widget state */}
+      <motion.div
+        initial="closed"
+        animate={isExpanded ? "open" : "closed"}
+        variants={{
+          open: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            pointerEvents: "auto",
+            display: "block"
+          },
+          closed: {
+            opacity: 0,
+            y: 20,
+            scale: 0.9,
+            pointerEvents: "none",
+            transitionEnd: {
+              display: "none"
+            }
+          }
+        }}
+        transition={{ duration: 0.3 }}
+        className="fixed bottom-28 right-6 z-50 w-80 bg-card rounded-2xl shadow-elevated border border-border overflow-hidden"
+      >
+        {/* Header */}
+        <div className="bg-primary p-5 text-primary-foreground">
+          <h3 className="font-serif text-xl font-semibold mb-1">Hi, I'm Tom! 🌿</h3>
+          <p className="text-sm text-primary-foreground/80">
+            I'm Rob's AI Virtual Assistant. How can I help you today?
+          </p>
+        </div>
 
-            {/* Content */}
-            <div className="p-5 space-y-4">
-              {/* Voice AI Option - Real Widget */}
-              {/* Voice AI Option - Real Widget */}
-              <div className="w-full flex flex-col items-center gap-2 mb-2">
-                <p className="font-medium text-foreground">Talk to me now</p>
-                <div className="w-full flex items-center justify-center overflow-hidden py-2">
-                  <div
-                    data-widget-key="e56e8963-7795-401e-893f-81dc59768f80"
-                    className="transform scale-90 origin-center"
-                    style={{ maxHeight: '100px' }}
-                  >
-                    {/* The script will inject the widget here. */}
-                  </div>
-                </div>
+        {/* Content */}
+        <div className="p-5 space-y-4">
+          {/* Voice AI Option - Real Widget */}
+          <div className="w-full flex flex-col items-center gap-2 mb-2">
+            <p className="font-medium text-foreground">Talk to me now</p>
+            <div className="w-full flex items-center justify-center overflow-hidden py-2" style={{ minHeight: '80px' }}>
+              <div
+                data-widget-key="e56e8963-7795-401e-893f-81dc59768f80"
+                className="transform scale-90 origin-center"
+                style={{ maxHeight: '100px' }}
+              >
+                {/* The script will inject the widget here. */}
               </div>
-
-              {/* Phone Option */}
-              <a
-                href="tel:+61415840985"
-                className="w-full p-4 rounded-xl flex items-center gap-4 bg-primary/5 hover:bg-primary/10 text-foreground transition-colors"
-              >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Phone className="w-6 h-6 text-primary" />
-                </div>
-                <div className="text-left">
-                  <p className="font-medium">Try me on</p>
-                  <p className="text-sm text-muted-foreground">0415 840 985</p>
-                </div>
-              </a>
-
-              {/* SMS Option */}
-              <a
-                href="sms:+61415840985"
-                className="w-full p-4 rounded-xl flex items-center gap-4 bg-primary/5 hover:bg-primary/10 text-foreground transition-colors"
-              >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <MessageCircle className="w-6 h-6 text-primary" />
-                </div>
-                <div className="text-left">
-                  <p className="font-medium">Send SMS</p>
-                  <p className="text-sm text-muted-foreground">Quick text message</p>
-                </div>
-              </a>
             </div>
+          </div>
 
-            {/* Footer */}
-            <div className="px-5 pb-5">
-              <p className="text-xs text-center text-muted-foreground">
-                Available 24/7 • Powered by AI
-              </p>
+          {/* Phone Option */}
+          <a
+            href="tel:+61415840985"
+            className="w-full p-4 rounded-xl flex items-center gap-4 bg-primary/5 hover:bg-primary/10 text-foreground transition-colors"
+          >
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <Phone className="w-6 h-6 text-primary" />
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div className="text-left">
+              <p className="font-medium">Try me on 0415 840 985</p>
+              <p className="text-sm text-muted-foreground">0415 840 985</p>
+            </div>
+          </a>
+
+          {/* SMS Option */}
+          <a
+            href="sms:+61415840985"
+            className="w-full p-4 rounded-xl flex items-center gap-4 bg-primary/5 hover:bg-primary/10 text-foreground transition-colors"
+          >
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <MessageCircle className="w-6 h-6 text-primary" />
+            </div>
+            <div className="text-left">
+              <p className="font-medium">Send SMS</p>
+              <p className="text-sm text-muted-foreground">Quick text message</p>
+            </div>
+          </a>
+        </div>
+
+        {/* Footer */}
+        <div className="px-5 pb-5">
+          <p className="text-xs text-center text-muted-foreground">
+            Available 24/7 • Powered by AI
+          </p>
+        </div>
+      </motion.div>
     </>
   );
 };

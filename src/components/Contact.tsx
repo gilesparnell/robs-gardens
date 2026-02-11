@@ -11,8 +11,8 @@ const contactInfo = [
   {
     icon: Phone,
     label: 'Phone',
-    value: '0400 000 000',
-    href: 'tel:+61400000000',
+    value: '0415 840 985',
+    href: 'tel:+61415840985',
   },
   {
     icon: Mail,
@@ -46,15 +46,15 @@ export const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     toast({
       title: "Quote Request Sent!",
       description: "We'll get back to you within 24 hours.",
     });
-    
+
     setFormData({ name: '', email: '', phone: '', message: '' });
     setIsSubmitting(false);
   };
@@ -142,7 +142,7 @@ export const Contact = () => {
                       <Input
                         id="phone"
                         type="tel"
-                        placeholder="0400 000 000"
+                        placeholder="0415 840 985"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         required

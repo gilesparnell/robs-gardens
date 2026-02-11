@@ -55,7 +55,7 @@ export const VoiceAIOrb = () => {
             <div className="bg-primary p-5 text-primary-foreground">
               <h3 className="font-serif text-xl font-semibold mb-1">Hi, I'm Tom! 🌿</h3>
               <p className="text-sm text-primary-foreground/80">
-                Your Rob Gardens AI assistant. How can I help you today?
+                I'm Rob's AI Virtual Assistant. How can I help you today?
               </p>
             </div>
 
@@ -75,21 +75,21 @@ export const VoiceAIOrb = () => {
 
               {/* Phone Option */}
               <a
-                href="tel:+61400000000"
+                href="tel:+61415840985"
                 className="w-full p-4 rounded-xl flex items-center gap-4 bg-primary/5 hover:bg-primary/10 text-foreground transition-colors"
               >
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                   <Phone className="w-6 h-6 text-primary" />
                 </div>
                 <div className="text-left">
-                  <p className="font-medium">Call Us</p>
-                  <p className="text-sm text-muted-foreground">0400 000 000</p>
+                  <p className="font-medium">Try me on 0415 840 985</p>
+                  <p className="text-sm text-muted-foreground">0415 840 985</p>
                 </div>
               </a>
 
               {/* SMS Option */}
               <a
-                href="sms:+61400000000"
+                href="sms:+61415840985"
                 className="w-full p-4 rounded-xl flex items-center gap-4 bg-primary/5 hover:bg-primary/10 text-foreground transition-colors"
               >
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">

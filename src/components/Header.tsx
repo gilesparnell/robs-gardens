@@ -46,9 +46,9 @@ export const Header = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <a href="tel:+61400000000" className="flex items-center gap-2 text-sm font-medium text-primary">
+            <a href="tel:+61415840985" className="flex items-center gap-2 text-sm font-medium text-primary">
               <Phone className="w-4 h-4" />
-              <span className="hidden xl:inline">0400 000 000</span>
+              <span className="hidden xl:inline">0415 840 985</span>
             </a>
             <Button variant="hero" size="lg">
               Get Free Quote

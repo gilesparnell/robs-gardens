@@ -55,7 +55,7 @@ export const WhyChooseUs = () => {
             </h2>
             <p className="text-primary-foreground/80 text-lg mb-10 max-w-xl">
               With a passion for creating beautiful outdoor spaces and a commitment to excellence, 
-              we've become the trusted choice for garden maintenance in the Northern Beaches.
+              we've become the trusted choice for homeowners, selling agents, strata and business parks across the Northern Beaches.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6">

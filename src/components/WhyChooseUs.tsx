@@ -49,7 +49,7 @@ export const WhyChooseUs = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <span className="text-primary-foreground/70 font-medium text-sm uppercase tracking-wider">Why Rob Gardens</span>
+            <span className="text-primary-foreground/70 font-medium text-sm uppercase tracking-wider">Why Rob Gardening</span>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mt-2 mb-6">
               Why Choose Us?
             </h2>

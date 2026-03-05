@@ -15,13 +15,13 @@ export const Footer = () => {
               </div>
               <div>
                 <h3 className="font-serif text-lg font-semibold leading-tight">
-                  Rob Gardens
+                  Rob Gardening
                 </h3>
                 <p className="text-xs text-primary-foreground/70">& Maintenance</p>
               </div>
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
-              The Art of Green Care. Specializing in trimming & maintenance for the Northern Beaches community.
+              The Art of Green Care. 3 dedicated teams servicing homes, strata, business parks and aged care across the Northern Beaches and Greater Sydney.
             </p>
           </div>
 
@@ -29,10 +29,10 @@ export const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {['Services', 'Pricing', 'Availability', 'Testimonials', 'Contact'].map((link) => (
+              {['Services', 'Pre-Sale', 'Pricing', 'Book Now', 'Testimonials', 'Contact'].map((link) => (
                 <li key={link}>
                   <a
-                    href={`#${link.toLowerCase()}`}
+                    href={`#${link.toLowerCase().replace(/\s+/g, '')}`}
                     className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors"
                   >
                     {link}
@@ -46,7 +46,7 @@ export const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Our Services</h4>
             <ul className="space-y-2">
-              {['Lawn Care & Mowing', 'Hedge Trimming', 'Tree Pruning', 'Garden Cleanups', 'Green Waste Removal'].map((service) => (
+              {['Pre-Sale Makeovers', 'Lawn Care & Mowing', 'Hedge Trimming', 'Hard Surface Cleaning', 'Ride-On Mower Hire', 'Seasonal Garden Care'].map((service) => (
                 <li key={service}>
                   <span className="text-sm text-primary-foreground/70">{service}</span>
                 </li>
@@ -60,22 +60,21 @@ export const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-primary-foreground/70" />
-                <a href="tel:+61415840985" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                  0415 840 985
+                <a href="tel:+61468170318" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                  0468 170 318
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-primary-foreground/70" />
-                <a href="mailto:info@robgardens.com.au" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                  info@robgardens.com.au
+                <a href="mailto:info@robgarden.com.au" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                  info@robgarden.com.au
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <MapPin className="w-4 h-4 text-primary-foreground/70" />
-                <span className="text-sm text-primary-foreground/70">Northern Beaches, NSW</span>
+                <span className="text-sm text-primary-foreground/70">Northern Beaches & Greater Sydney, NSW</span>
               </li>
             </ul>
-            {/* Social Links */}
             <div className="flex gap-4 mt-6">
               <a
                 href="https://www.instagram.com/robgardensandmaintenance/"
@@ -97,10 +96,9 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="border-t border-primary-foreground/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-primary-foreground/60">
-            © {currentYear} Rob Gardens & Maintenance. All rights reserved.
+            &copy; {currentYear} Rob Gardening &amp; Maintenance. All rights reserved.
           </p>
           <div className="flex gap-6">
             <a href="#" className="text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">

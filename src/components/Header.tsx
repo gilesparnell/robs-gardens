@@ -5,8 +5,9 @@ import { Phone, Menu, X } from 'lucide-react';
 
 const navLinks = [
   { href: '#services', label: 'Services' },
+  { href: '#presales', label: 'Pre-Sale' },
   { href: '#pricing', label: 'Pricing' },
-  { href: '#availability', label: 'Availability' },
+  { href: '#book', label: 'Book Now' },
   { href: '#testimonials', label: 'Testimonials' },
   { href: '#contact', label: 'Contact' },
 ];
@@ -25,7 +26,7 @@ export const Header = () => {
             </div>
             <div className="hidden sm:block">
               <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">
-                Rob Gardens
+                Rob Gardening
               </h1>
               <p className="text-xs text-muted-foreground">& Maintenance</p>
             </div>
@@ -46,13 +47,15 @@ export const Header = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <a href="tel:+61415840985" className="flex items-center gap-2 text-sm font-medium text-primary">
+            <a href="tel:+61468170318" className="flex items-center gap-2 text-sm font-medium text-primary">
               <Phone className="w-4 h-4" />
-              <span className="hidden xl:inline">0415 840 985</span>
+              <span className="hidden xl:inline">0468 170 318</span>
             </a>
-            <Button variant="hero" size="lg">
-              Get Free Quote
-            </Button>
+            <a href="#contact">
+              <Button variant="hero" size="lg">
+                Get Free Quote
+              </Button>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -87,9 +90,11 @@ export const Header = () => {
                 </a>
               ))}
               <div className="pt-4 border-t border-border">
-                <Button variant="hero" size="lg" className="w-full">
-                  Get Free Quote
-                </Button>
+                <a href="#contact" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="hero" size="lg" className="w-full">
+                    Get Free Quote
+                  </Button>
+                </a>
               </div>
             </nav>
           </motion.div>

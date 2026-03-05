@@ -4,33 +4,52 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Mic } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const contactInfo = [
   {
     icon: Phone,
-    label: 'Phone',
-    value: '0415 840 985',
-    href: 'tel:+61415840985',
+    label: 'Call Us',
+    value: '0468 170 318',
+    href: 'tel:+61468170318',
+    description: 'Speak directly with our team',
+  },
+  {
+    icon: Mic,
+    label: 'Voice AI Assistant',
+    value: 'Chat with Tom',
+    href: null,
+    description: 'Click the orb for instant answers',
+    isOrb: true,
   },
   {
     icon: Mail,
     label: 'Email',
-    value: 'info@robgardens.com.au',
-    href: 'mailto:info@robgardens.com.au',
+    value: 'info@robgarden.com.au',
+    href: 'mailto:info@robgarden.com.au',
+    description: 'We reply within 24 hours',
+  },
+  {
+    icon: MessageCircle,
+    label: 'Send a Text',
+    value: 'SMS 0468 170 318',
+    href: 'sms:+61468170318',
+    description: 'Quick text message',
   },
   {
     icon: MapPin,
     label: 'Service Area',
-    value: 'Northern Beaches, NSW',
+    value: 'Northern Beaches & Greater Sydney',
     href: null,
+    description: 'Homes, strata, business parks & aged care',
   },
   {
     icon: Clock,
     label: 'Hours',
-    value: 'Mon - Sat: 7am - 5pm',
+    value: 'Mon – Sat: 7am – 5pm',
     href: null,
+    description: 'AI assistant available 24/7',
   },
 ];
 
@@ -47,7 +66,6 @@ export const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     toast({
@@ -59,10 +77,14 @@ export const Contact = () => {
     setIsSubmitting(false);
   };
 
+  const handleOrbClick = () => {
+    const orbButton = document.querySelector('[aria-label="Open AI assistant"]') as HTMLButtonElement;
+    if (orbButton) orbButton.click();
+  };
+
   return (
     <section id="contact" className="py-24 bg-gradient-nature">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -75,34 +97,42 @@ export const Contact = () => {
             Request a Free Quote
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Ready to transform your garden? Get in touch for a free, no-obligation quote.
+            Ready to transform your garden? Reach out any way you prefer — call, text, email or chat with our AI assistant.
           </p>
         </motion.div>
 
         <div className="grid lg:grid-cols-5 gap-12 max-w-6xl mx-auto">
-          {/* Contact Info */}
+          {/* Contact Options */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-2 space-y-6"
+            className="lg:col-span-2 space-y-4"
           >
             {contactInfo.map((item) => (
-              <Card key={item.label} className="bg-card border-border">
+              <Card key={item.label} className="bg-card border-border hover:border-primary/30 transition-colors">
                 <CardContent className="p-4 flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                     <item.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{item.label}</p>
-                    {item.href ? (
-                      <a href={item.href} className="font-medium text-foreground hover:text-primary transition-colors">
+                  <div className="min-w-0">
+                    <p className="text-xs text-muted-foreground">{item.label}</p>
+                    {item.isOrb ? (
+                      <button
+                        onClick={handleOrbClick}
+                        className="font-medium text-foreground hover:text-primary transition-colors text-left"
+                      >
+                        {item.value}
+                      </button>
+                    ) : item.href ? (
+                      <a href={item.href} className="font-medium text-foreground hover:text-primary transition-colors block truncate">
                         {item.value}
                       </a>
                     ) : (
-                      <p className="font-medium text-foreground">{item.value}</p>
+                      <p className="font-medium text-foreground truncate">{item.value}</p>
                     )}
+                    <p className="text-xs text-muted-foreground/70">{item.description}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -142,7 +172,7 @@ export const Contact = () => {
                       <Input
                         id="phone"
                         type="tel"
-                        placeholder="0415 840 985"
+                        placeholder="0400 000 000"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         required
@@ -166,11 +196,11 @@ export const Contact = () => {
                   </div>
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                      Tell Us About Your Garden
+                      Tell Us About Your Property
                     </label>
                     <Textarea
                       id="message"
-                      placeholder="Describe your garden and what services you're interested in..."
+                      placeholder="Describe your property, the services you need, and any timeline requirements..."
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required

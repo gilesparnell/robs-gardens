@@ -1,51 +1,57 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Check, Star } from 'lucide-react';
+import { Check, Star, ArrowRight } from 'lucide-react';
 
 const pricingPlans = [
   {
-    name: 'Basic Care',
-    description: 'Perfect for small gardens',
-    price: 75,
-    frequency: 'per visit',
-    features: [
-      'Lawn mowing & edging',
-      'Basic hedge trimming',
-      'Green waste removal',
-      'Up to 200m² garden',
-    ],
-    popular: false,
-  },
-  {
-    name: 'Premium Care',
-    description: 'Our most popular package',
+    name: 'Regular Maintenance',
+    description: 'Ongoing garden care',
     price: 150,
-    frequency: 'per visit',
+    frequency: 'per hour',
     features: [
-      'Everything in Basic',
-      'Detailed hedge shaping',
-      'Garden bed maintenance',
-      'Plant health check',
-      'Up to 500m² garden',
-      'Priority booking',
+      'Team of two professionals',
+      'Lawn mowing & edging',
+      'Hedge trimming & pruning',
+      'Weeding & mulching',
+      'Green waste removal',
+      'Blow-outs included',
     ],
     popular: true,
+    note: 'Most homes take 2–4 hours',
   },
   {
-    name: 'Estate Care',
-    description: 'Complete garden management',
-    price: 300,
-    frequency: 'per visit',
+    name: 'Pre-Sale Makeover',
+    description: 'Get your property sale-ready',
+    price: null,
+    priceText: '$4K – $5K',
+    frequency: 'typical project',
     features: [
-      'Everything in Premium',
-      'Tree trimming & pruning',
-      'Irrigation check',
-      'Seasonal planting advice',
-      'Unlimited garden size',
-      'Same-day service',
+      'Full property transformation',
+      '3–4 day turnaround typical',
+      'Waterblasting & hard surfaces',
+      'New planting & mulching',
+      'Ongoing campaign maintenance option',
+      'Custom quote based on property size',
     ],
     popular: false,
+    note: 'Quote determines crew size & scope',
+  },
+  {
+    name: 'Ride-On Mower',
+    description: 'Large property solutions',
+    price: 200,
+    frequency: 'per hour hire',
+    features: [
+      'Professional ride-on mower',
+      'We do it or you hire it',
+      'Delivery within 20 miles: $200',
+      'Daily rates available',
+      'Perfect for acreage & estates',
+      'Business parks & aged care',
+    ],
+    popular: false,
+    note: 'Or $150/hr with our team of two',
   },
 ];
 
@@ -53,7 +59,6 @@ export const Pricing = () => {
   return (
     <section id="pricing" className="py-24 bg-background">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -66,11 +71,10 @@ export const Pricing = () => {
             Simple, Transparent Pricing
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Choose the package that fits your garden. All prices are starting rates and may vary based on garden condition.
+            Straightforward rates for every job. Get a free quote to determine the right scope for your property.
           </p>
         </motion.div>
 
-        {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {pricingPlans.map((plan, index) => (
             <motion.div
@@ -95,38 +99,52 @@ export const Pricing = () => {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="mb-6">
-                    <span className="text-4xl font-bold text-foreground">${plan.price}</span>
-                    <span className="text-muted-foreground ml-2">{plan.frequency}</span>
+                    {plan.price ? (
+                      <>
+                        <span className="text-4xl font-bold text-foreground">${plan.price}</span>
+                        <span className="text-muted-foreground ml-2">{plan.frequency}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-3xl font-bold text-foreground">{plan.priceText}</span>
+                        <span className="text-muted-foreground ml-2 block text-sm mt-1">{plan.frequency}</span>
+                      </>
+                    )}
                   </div>
-                  <ul className="space-y-3 mb-8 text-left">
+                  <ul className="space-y-3 mb-6 text-left">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3">
                         <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                        <span className="text-muted-foreground">{feature}</span>
+                        <span className="text-muted-foreground text-sm">{feature}</span>
                       </li>
                     ))}
                   </ul>
-                  <Button 
-                    variant={plan.popular ? 'hero' : 'outline'} 
-                    className="w-full"
-                    size="lg"
-                  >
-                    Get Started
-                  </Button>
+                  {plan.note && (
+                    <p className="text-xs text-muted-foreground/70 mb-4 italic">{plan.note}</p>
+                  )}
+                  <a href="#contact">
+                    <Button
+                      variant={plan.popular ? 'hero' : 'outline'}
+                      className="w-full"
+                      size="lg"
+                    >
+                      Get a Quote
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </a>
                 </CardContent>
               </Card>
             </motion.div>
           ))}
         </div>
 
-        {/* Note */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           className="text-center text-muted-foreground mt-12 text-sm"
         >
-          * Prices are indicative. Contact us for a personalized quote based on your specific needs.
+          * All prices are indicative. A free on-site quote will determine the exact scope, crew size, and cost for your property.
         </motion.p>
       </div>
     </section>

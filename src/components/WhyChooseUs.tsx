@@ -49,13 +49,13 @@ export const WhyChooseUs = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <span className="text-primary-foreground/70 font-medium text-sm uppercase tracking-wider">Why Rob Gardens</span>
+            <span className="text-primary-foreground/70 font-medium text-sm uppercase tracking-wider">Why Rob Gardening</span>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mt-2 mb-6">
               Why Choose Us?
             </h2>
             <p className="text-primary-foreground/80 text-lg mb-10 max-w-xl">
               With a passion for creating beautiful outdoor spaces and a commitment to excellence, 
-              we've become the trusted choice for garden maintenance in the Northern Beaches.
+              we've become the trusted choice for homeowners, selling agents, strata and business parks across the Northern Beaches.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6">

@@ -24,7 +24,7 @@ const pricingPlans = [
     name: 'Pre-Sale Makeover',
     description: 'Get your property sale-ready',
     price: null,
-    priceText: '$4K – $5K',
+    priceText: '$2K – $4K',
     frequency: 'typical project',
     features: [
       'Full property transformation',

@@ -1,7 +1,17 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Star, Shield, Leaf, Mic } from 'lucide-react';
 import heroImage from '@/assets/hero-garden.jpg';
+import { generateServiceAreaText } from '@/lib/serviceAreaHelper';
+import initialZones from '../../data/zones.json';
+
+type Zone = {
+  day: string;
+  postcodes: string[];
+  areas: string[];
+  label: string;
+};
 
 const features = [
   { icon: Star, text: '5-Star Rated' },
@@ -10,6 +20,14 @@ const features = [
 ];
 
 export const Hero = () => {
+  const [serviceAreaText, setServiceAreaText] = useState('Servicing Northern Beaches & Greater Sydney, NSW');
+
+  useEffect(() => {
+    const data = initialZones as { schedule: Zone[] };
+    const text = generateServiceAreaText(data.schedule);
+    setServiceAreaText(`Servicing ${text}`);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -31,7 +49,7 @@ export const Hero = () => {
           >
             <div className="inline-flex items-center gap-2 bg-primary-foreground/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="text-sm text-primary-foreground/90">Servicing Northern Beaches & Greater Sydney, NSW</span>
+              <span className="text-sm text-primary-foreground/90">{serviceAreaText}</span>
             </div>
 
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-foreground leading-tight mb-6">
@@ -41,7 +59,7 @@ export const Hero = () => {
             </h2>
 
             <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-xl">
-              3 dedicated teams delivering expert garden maintenance, pre-sale property makeovers, and complete outdoor transformations.
+              3 dedicated teams delivering expert garden maintenance, specialising in pre-sale property makeovers, and complete outdoor transformations.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 mb-12">
@@ -71,8 +89,17 @@ export const Hero = () => {
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     whileHover={{ scale: 1.15 }}
                     onClick={() => {
-                      const orbButton = document.querySelector('[aria-label="Open AI assistant"]') as HTMLButtonElement;
-                      if (orbButton) orbButton.click();
+                      // Find and click the GHL chat button in shadow DOM
+                      const allElements = document.querySelectorAll('*');
+                      for (const el of allElements) {
+                        if (el.shadowRoot) {
+                          const shadowButton = el.shadowRoot?.querySelector('button[id*="lc_text-widget"]');
+                          if (shadowButton) {
+                            (shadowButton as HTMLButtonElement).click();
+                            return;
+                          }
+                        }
+                      }
                     }}
                   >
                     <span className="absolute inset-0 rounded-full bg-orb-primary animate-ping opacity-30" />

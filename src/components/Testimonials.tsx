@@ -4,10 +4,10 @@ import { Star, Quote } from 'lucide-react';
 
 const testimonials = [
   {
-    name: 'Kevin Schuster',
-    location: 'Palm Beach, NSW',
+    name: 'Giles Parnell',
+    location: 'Elanora Heights, NSW',
     rating: 5,
-    text: 'Rob Gardens & Maintenance exceeded all my expectations! They transformed my garden seamlessly, demonstrating professionalism and exceptional attention to detail. Highly recommended!',
+    text: 'Rob and his team were beyond amazing. In selling our home, I went from thinking i could do everything myself to realising i was way way over my head. I found Robs website online and was then super impressed that he had a 24/7 virtual receptionist on his site. Every time i called, i got clear updated information on his pricing, his availability and when he was going to arrive. I received text notifications leading up to my appointment. NEXT level service.',
     avatar: null,
   },
   {
@@ -61,7 +61,7 @@ export const Testimonials = () => {
                 <CardContent className="p-6 md:p-8">
                   {/* Quote Icon */}
                   <Quote className="w-10 h-10 text-primary/20 mb-4" />
-                  
+
                   {/* Rating */}
                   <div className="flex gap-1 mb-4">
                     {Array.from({ length: testimonial.rating }).map((_, i) => (

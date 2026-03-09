@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,52 +6,61 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Mic } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { generateServiceAreaText, generateServiceAreaDescription } from '@/lib/serviceAreaHelper';
+import initialZones from '../../data/zones.json';
 
-const contactInfo = [
-  {
-    icon: Phone,
-    label: 'Call Us',
-    value: '0468 170 318',
-    href: 'tel:+61468170318',
-    description: 'Speak directly with our team',
-  },
-  {
-    icon: Mic,
-    label: 'Voice AI Assistant',
-    value: 'Chat with Tom',
-    href: null,
-    description: 'Click the orb for instant answers',
-    isOrb: true,
-  },
-  {
-    icon: Mail,
-    label: 'Email',
-    value: 'info@robgarden.com.au',
-    href: 'mailto:info@robgarden.com.au',
-    description: 'We reply within 24 hours',
-  },
-  {
-    icon: MessageCircle,
-    label: 'Send a Text',
-    value: 'SMS 0468 170 318',
-    href: 'sms:+61468170318',
-    description: 'Quick text message',
-  },
-  {
-    icon: MapPin,
-    label: 'Service Area',
-    value: 'Northern Beaches & Greater Sydney',
-    href: null,
-    description: 'Homes, strata, business parks & aged care',
-  },
-  {
-    icon: Clock,
-    label: 'Hours',
-    value: 'Mon – Sat: 7am – 5pm',
-    href: null,
-    description: 'AI assistant available 24/7',
-  },
-];
+type Zone = {
+  day: string;
+  postcodes: string[];
+  areas: string[];
+  label: string;
+};
+
+const baseContactInfo = [
+    {
+      icon: Phone,
+      label: 'Call Us',
+      value: '0468 170 318',
+      href: 'tel:+61468170318',
+      description: 'Speak directly with our team',
+    },
+    {
+      icon: Mic,
+      label: 'Voice AI Assistant',
+      value: 'Chat with Tom',
+      href: null,
+      description: 'Click the orb for instant answers',
+      isOrb: true,
+    },
+    {
+      icon: Mail,
+      label: 'Email',
+      value: 'info@robgarden.com.au',
+      href: 'mailto:info@robgarden.com.au',
+      description: 'We reply within 24 hours',
+    },
+    {
+      icon: MessageCircle,
+      label: 'Send a Text',
+      value: 'SMS 0468 170 318',
+      href: 'sms:+61468170318',
+      description: 'Quick text message',
+    },
+    {
+      icon: MapPin,
+      label: 'Service Area',
+      value: 'Northern Beaches & Greater Sydney',
+      href: null,
+      description: 'Homes, strata, business parks & aged care',
+    },
+    {
+      icon: Clock,
+      label: 'Hours',
+      value: 'Mon – Sat: 7am – 5pm',
+      href: null,
+      description: 'AI assistant available 24/7',
+    },
+  ];
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -61,25 +70,80 @@ export const Contact = () => {
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactInfo, setContactInfo] = useState(baseContactInfo);
+
+  useEffect(() => {
+    const data = initialZones as { schedule: Zone[] };
+    const serviceAreaText = generateServiceAreaText(data.schedule);
+    const serviceAreaDescription = generateServiceAreaDescription(data.schedule);
+
+    // Update the Service Area contact info with dynamic text
+    const updatedInfo = baseContactInfo.map(item =>
+      item.label === 'Service Area'
+        ? { ...item, value: serviceAreaText, description: serviceAreaDescription }
+        : item
+    );
+
+    setContactInfo(updatedInfo);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // REPLACE THIS WITH THE GHL WEBHOOK URL FROM THE GUIDE
+    const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/ga76yfab1iQADxaKICLX/webhook-trigger/t2widBas7fGozk9szi2T';
 
-    toast({
-      title: "Quote Request Sent!",
-      description: "We'll get back to you within 24 hours.",
-    });
+    try {
+      if (!GHL_WEBHOOK_URL) {
+        // Fallback for simulation if no URL is provided yet
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.warn('GHL Webhook URL is missing. Simulation mode only.');
+      } else {
+        const response = await fetch(GHL_WEBHOOK_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            source: 'Website Quote Form',
+            timestamp: new Date().toISOString(),
+          }),
+        });
 
-    setFormData({ name: '', email: '', phone: '', message: '' });
-    setIsSubmitting(false);
+        if (!response.ok) throw new Error('Failed to send to GHL');
+      }
+
+      toast({
+        title: "Quote Request Sent!",
+        description: "Roberto has been notified and will be in touch within 24 hours.",
+      });
+
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Submission Error",
+        description: "We couldn't process your request. Please try calling us directly.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleOrbClick = () => {
-    const orbButton = document.querySelector('[aria-label="Open AI assistant"]') as HTMLButtonElement;
-    if (orbButton) orbButton.click();
+    // Find and click the GHL chat button in shadow DOM
+    const allElements = document.querySelectorAll('*');
+    for (const el of allElements) {
+      if (el.shadowRoot) {
+        const shadowButton = el.shadowRoot?.querySelector('button[id*="lc_text-widget"]');
+        if (shadowButton) {
+          (shadowButton as HTMLButtonElement).click();
+          return;
+        }
+      }
+    }
   };
 
   return (

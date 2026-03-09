@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { Scissors, TreeDeciduous, Flower2, Recycle, Droplets, Sparkles, Sun } from 'lucide-react';
+import { Scissors, TreeDeciduous, Flower2, Recycle, Droplets, Sparkles, Sun, TrendingUp, DollarSign, Home } from 'lucide-react';
 
 const services = [
   {
@@ -42,7 +42,7 @@ const services = [
 
 export const Services = () => {
   return (
-    <section id="services" className="py-24 bg-gradient-nature">
+    <section id="services" className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -51,13 +51,14 @@ export const Services = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-accent font-medium text-sm uppercase tracking-wider">What We Offer</span>
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-2 mb-4">
-            Our Services
+          <span className="text-primary font-medium text-sm uppercase tracking-wider">Reliable Care</span>
+          <h2 className="font-serif text-3xl md:text-5xl font-bold text-foreground mt-2 mb-4">
+            Pristine Property Maintenance
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            From routine maintenance to complete garden transformations, our 3 dedicated teams provide comprehensive care for homes, strata, business parks and aged care estates.
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
+            Keep your landscape in peak condition year-round. From scheduled lawn care to complete horticultural management, we provide the consistent, high-end care your property deserves.
           </p>
+
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

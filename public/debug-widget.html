@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GHL Widget Dump</title>
+</head>
+<body>
+    <h1>Testing GHL Widget Shadow DOM</h1>
+    <!-- The exact snippet from user's index.html or my loadGHL func -->
+    <div data-chat-widget data-widget-id="69aa7bee4d840e5ae8d1ca7c" data-location-id="ga76yfab1iQADxaKICLX"></div>
+    <script src="https://widgets.leadconnectorhq.com/loader.js" data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" data-widget-id="69aa7bee4d840e5ae8d1ca7c"></script>
+    
+    <script>
+        function dumpShadow() {
+            const root = document.querySelector('chat-widget')?.shadowRoot;
+            if (!root) {
+                console.log("No shadow root yet...");
+                return null;
+            }
+            const allElements = [];
+            Array.from(root.querySelectorAll('*')).forEach(el => {
+                const text = el.textContent?.trim() || el.value || '';
+                const tag = el.tagName.toLowerCase();
+                if (text || tag === 'button' || tag === 'svg' || el.onclick) {
+                    allElements.push({
+                        tag,
+                        text: text.substring(0,50),
+                        id: el.id,
+                        class: el.className,
+                        label: el.getAttribute('aria-label')
+                    });
+                }
+            });
+            console.log("SHADOW DOM DUMP:", JSON.stringify(allElements, null, 2));
+            return allElements;
+        }
+
+        setTimeout(() => {
+            console.log("Triggering open...");
+            if (window.leadConnector?.chatWidget?.openWidget) {
+                window.leadConnector.chatWidget.openWidget();
+            } else {
+                const root = document.querySelector('chat-widget')?.shadowRoot;
+                const btn = root?.querySelector('button.lc_text-widget--btn');
+                if (btn) btn.click();
+            }
+            
+            setTimeout(() => {
+                console.log("Dumping after open");
+                dumpShadow();
+            }, 3000);
+        }, 5000);
+    </script>
+</body>
+</html>

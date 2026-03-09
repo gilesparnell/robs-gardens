@@ -1,5 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { kv } from '@vercel/kv';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 /**
  * Check Availability - Geo-specific service availability
@@ -57,10 +59,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Fallback to static data
     if (!schedule) {
       try {
-        const zonesJson = require('../data/zones.json');
+        const zonesPath = join(__dirname, '../data/zones.json');
+        const zonesData = readFileSync(zonesPath, 'utf-8');
+        const zonesJson = JSON.parse(zonesData);
         schedule = zonesJson.schedule || [];
-      } catch (importError) {
-        console.error('[check-availability] Failed to load zones.json:', importError);
+      } catch (fileError) {
+        console.error('[check-availability] Failed to load zones.json:', fileError);
         schedule = [];
       }
     }

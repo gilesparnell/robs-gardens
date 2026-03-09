@@ -61,8 +61,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Fallback to static data
     if (!schedule) {
-      const zonesJson = await import('../data/zones.json');
-      schedule = zonesJson.default?.schedule || [];
+      try {
+        const zonesJson = require('../data/zones.json');
+        schedule = zonesJson.schedule || [];
+      } catch (importError) {
+        console.error('[areas-by-day] Failed to load zones.json:', importError);
+        schedule = [];
+      }
     }
 
     // Find the zone for this day (case-insensitive)

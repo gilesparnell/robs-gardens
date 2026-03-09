@@ -1,7 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { kv } from '@vercel/kv';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
 /**
  * Get Service Areas by Day
@@ -36,6 +34,65 @@ type Zone = {
   label: string;
 };
 
+// Fallback schedule data (updated from zones.json)
+const DEFAULT_SCHEDULE: Zone[] = [
+  {
+    day: 'Monday',
+    postcodes: ['2101', '2102'],
+    areas: ['Elanora Heights', 'Narrabeen', 'North Narrabeen'],
+    areaPostcodes: [
+      { area: 'Elanora Heights', postcode: '2101' },
+      { area: 'Narrabeen', postcode: '2101' },
+      { area: 'North Narrabeen', postcode: '2102' },
+    ],
+    label: 'Northern Beaches Central',
+  },
+  {
+    day: 'Tuesday',
+    postcodes: ['2070', '2071', '2073'],
+    areas: ['Lindfield', 'Killara', 'Pymble'],
+    areaPostcodes: [
+      { area: 'Lindfield', postcode: '2070' },
+      { area: 'Killara', postcode: '2071' },
+      { area: 'Pymble', postcode: '2073' },
+    ],
+    label: 'Upper North Shore',
+  },
+  {
+    day: 'Wednesday',
+    postcodes: ['2103', '2104', '2105'],
+    areas: ['Mona Vale', 'Bayview', 'Newport'],
+    areaPostcodes: [
+      { area: 'Mona Vale', postcode: '2103' },
+      { area: 'Bayview', postcode: '2104' },
+      { area: 'Newport', postcode: '2105' },
+    ],
+    label: 'Northern Beaches North',
+  },
+  {
+    day: 'Thursday',
+    postcodes: ['2067', '2068', '2069'],
+    areas: ['Chatswood', 'Castlecrag', 'Roseville'],
+    areaPostcodes: [
+      { area: 'Chatswood', postcode: '2067' },
+      { area: 'Castlecrag', postcode: '2068' },
+      { area: 'Roseville', postcode: '2069' },
+    ],
+    label: 'Lower North Shore',
+  },
+  {
+    day: 'Friday',
+    postcodes: ['2106', '2107', '2108'],
+    areas: ['Bilgola', 'Avalon', 'Palm Beach'],
+    areaPostcodes: [
+      { area: 'Bilgola', postcode: '2106' },
+      { area: 'Avalon', postcode: '2107' },
+      { area: 'Palm Beach', postcode: '2108' },
+    ],
+    label: 'Palm Beach / Peninsula',
+  },
+];
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
@@ -61,17 +118,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.warn('[areas-by-day] KV read failed, falling back to static data');
     }
 
-    // Fallback to static data
+    // Fallback to default schedule
     if (!schedule) {
-      try {
-        const zonesPath = join(__dirname, '../data/zones.json');
-        const zonesData = readFileSync(zonesPath, 'utf-8');
-        const zonesJson = JSON.parse(zonesData);
-        schedule = zonesJson.schedule || [];
-      } catch (fileError) {
-        console.error('[areas-by-day] Failed to load zones.json:', fileError);
-        schedule = [];
-      }
+      schedule = DEFAULT_SCHEDULE;
     }
 
     // Find the zone for this day (case-insensitive)

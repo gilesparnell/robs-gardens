@@ -1,7 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { kv } from '@vercel/kv';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
 /**
  * Check Availability - Geo-specific service availability
@@ -30,6 +28,40 @@ type Zone = {
   label: string;
 };
 
+// Fallback schedule data (updated from zones.json)
+const DEFAULT_SCHEDULE: Zone[] = [
+  {
+    day: 'Monday',
+    postcodes: ['2101', '2102'],
+    areas: ['Elanora Heights', 'Narrabeen', 'North Narrabeen'],
+    label: 'Northern Beaches Central',
+  },
+  {
+    day: 'Tuesday',
+    postcodes: ['2070', '2071', '2073'],
+    areas: ['Lindfield', 'Killara', 'Pymble'],
+    label: 'Upper North Shore',
+  },
+  {
+    day: 'Wednesday',
+    postcodes: ['2103', '2104', '2105'],
+    areas: ['Mona Vale', 'Bayview', 'Newport'],
+    label: 'Northern Beaches North',
+  },
+  {
+    day: 'Thursday',
+    postcodes: ['2067', '2068', '2069'],
+    areas: ['Chatswood', 'Castlecrag', 'Roseville'],
+    label: 'Lower North Shore',
+  },
+  {
+    day: 'Friday',
+    postcodes: ['2106', '2107', '2108'],
+    areas: ['Bilgola', 'Avalon', 'Palm Beach'],
+    label: 'Palm Beach / Peninsula',
+  },
+];
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
@@ -56,17 +88,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.warn('[check-availability] KV read failed, falling back to static data');
     }
 
-    // Fallback to static data
+    // Fallback to default schedule
     if (!schedule) {
-      try {
-        const zonesPath = join(__dirname, '../data/zones.json');
-        const zonesData = readFileSync(zonesPath, 'utf-8');
-        const zonesJson = JSON.parse(zonesData);
-        schedule = zonesJson.schedule || [];
-      } catch (fileError) {
-        console.error('[check-availability] Failed to load zones.json:', fileError);
-        schedule = [];
-      }
+      schedule = DEFAULT_SCHEDULE;
     }
 
     // Find matching postcode

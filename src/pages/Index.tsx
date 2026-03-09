@@ -7,9 +7,11 @@ import { Pricing } from '@/components/Pricing';
 import { BookingSection } from '@/components/BookingSection';
 import { WhyChooseUs } from '@/components/WhyChooseUs';
 import { Testimonials } from '@/components/Testimonials';
+import { Team } from '@/components/Team';
 import { Contact } from '@/components/Contact';
 import { Footer } from '@/components/Footer';
-import { VoiceAIOrb } from '@/components/VoiceAIOrb';
+import { GHLChatWidget } from '@/components/GHLChatWidget';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 const Index = () => {
   return (
@@ -17,17 +19,20 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
-        <Services />
         <PreSalesService />
+        <Services />
         <RideMowerHire />
         <Pricing />
         <BookingSection />
         <WhyChooseUs />
         <Testimonials />
+        <Team />
         <Contact />
       </main>
       <Footer />
-      <VoiceAIOrb />
+      <ErrorBoundary onError={(error, info) => console.error('[GHL Widget Error]', error, info)}>
+        <GHLChatWidget />
+      </ErrorBoundary>
     </div>
   );
 };

@@ -140,8 +140,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let areasWithPostcodes: Array<{ name: string; postcode: string }>;
 
     if (zone.areaPostcodes && zone.areaPostcodes.length > 0) {
-      // Use the explicit mapping
-      areasWithPostcodes = zone.areaPostcodes;
+      // Use the explicit mapping, normalizing field names (area → name)
+      areasWithPostcodes = zone.areaPostcodes.map((ap) => ({
+        name: ap.area,
+        postcode: ap.postcode,
+      }));
     } else {
       // Fallback: map areas to postcodes in order (for backwards compatibility)
       areasWithPostcodes = zone.areas.map((area, index) => ({

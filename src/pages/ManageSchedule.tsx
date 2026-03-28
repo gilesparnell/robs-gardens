@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Save, ArrowLeft, Plus, Trash2, MapPin, Calendar, X, HelpCircle } from 'lucide-react';
+import { Save, ArrowLeft, Plus, Trash2, MapPin, Calendar, X, HelpCircle, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import initialZones from '../../data/zones.json';
@@ -13,20 +13,17 @@ import { AU_POSTCODE_MAP, SUBURB_TO_POSTCODE } from '../lib/postcodeData';
 import { SuburbAutocomplete } from '@/components/SuburbAutocomplete';
 import { SelectAreaMap } from '@/components/SelectAreaMap';
 
-type Zone = {
-    day: string;
-    postcodes: string[];
-    areas: string[];
-    label: string;
-};
+import type { Zone, RotatingSchedule } from '../../types/schedule';
 
-type ZonesData = {
-    schedule: Zone[];
-};
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 
 export default function ManageSchedule() {
     const navigate = useNavigate();
-    const [schedule, setSchedule] = useState<Zone[]>([]);
+    const [schedule, setSchedule] = useState<RotatingSchedule>({
+        weeks: [{ week: 1, zones: [] }, { week: 2, zones: [] }],
+        anchorDate: new Date().toISOString().split('T')[0],
+    });
+    const [activeWeek, setActiveWeek] = useState<1 | 2>(1);
     const [isSaving, setIsSaving] = useState(false);
     const [pcInput, setPcInput] = useState<string[]>([]);
     const [areaInput, setAreaInput] = useState<string[]>([]);
@@ -34,11 +31,29 @@ export default function ManageSchedule() {
     const [showHelp, setShowHelp] = useState(true);
 
     useEffect(() => {
-        const data = initialZones as ZonesData;
-        setSchedule(data.schedule);
-        setPcInput(new Array(data.schedule.length).fill(''));
-        setAreaInput(new Array(data.schedule.length).fill(''));
+        const data = initialZones as RotatingSchedule;
+        setSchedule(data);
+        const zones = data.weeks[0].zones;
+        setPcInput(new Array(zones.length).fill(''));
+        setAreaInput(new Array(zones.length).fill(''));
     }, []);
+
+    // Current week's zones
+    const currentZones = schedule.weeks[activeWeek - 1].zones;
+
+    const setCurrentZones = (zones: Zone[]) => {
+        setSchedule(prev => {
+            const newWeeks = [...prev.weeks] as [typeof prev.weeks[0], typeof prev.weeks[1]];
+            newWeeks[activeWeek - 1] = { ...newWeeks[activeWeek - 1], zones };
+            return { ...prev, weeks: newWeeks };
+        });
+    };
+
+    // Reset inputs when switching weeks
+    useEffect(() => {
+        setPcInput(new Array(currentZones.length).fill(''));
+        setAreaInput(new Array(currentZones.length).fill(''));
+    }, [activeWeek, currentZones.length]);
 
     const syncPostcodesToAreas = (postcodes: string[]) => {
         const areas = new Set<string>();
@@ -60,13 +75,12 @@ export default function ManageSchedule() {
 
     const handleAddPostcode = (index: number, pc: string) => {
         if (!pc) return;
-        const newSchedule = [...schedule];
-        const currentPcs = new Set(newSchedule[index].postcodes);
+        const newZones = [...currentZones];
+        const currentPcs = new Set(newZones[index].postcodes);
         currentPcs.add(pc);
         const updatedPcs = Array.from(currentPcs);
-        newSchedule[index].postcodes = updatedPcs;
-        newSchedule[index].areas = syncPostcodesToAreas(updatedPcs);
-        setSchedule(newSchedule);
+        newZones[index] = { ...newZones[index], postcodes: updatedPcs, areas: syncPostcodesToAreas(updatedPcs) };
+        setCurrentZones(newZones);
 
         const newPcInput = [...pcInput];
         newPcInput[index] = '';
@@ -75,23 +89,20 @@ export default function ManageSchedule() {
 
     const handleAddArea = (index: number, area: string, postcode?: string) => {
         if (!area) return;
-        const newSchedule = [...schedule];
-        const currentAreas = new Set(newSchedule[index].areas);
+        const newZones = [...currentZones];
+        const currentAreas = new Set(newZones[index].areas);
         currentAreas.add(area);
         const updatedAreas = Array.from(currentAreas);
-        newSchedule[index].areas = updatedAreas;
 
-        // If postcode provided (from map or autocomplete), add it directly
-        // Otherwise, sync from areas
         if (postcode) {
-            const currentPcs = new Set(newSchedule[index].postcodes);
+            const currentPcs = new Set(newZones[index].postcodes);
             currentPcs.add(postcode);
-            newSchedule[index].postcodes = Array.from(currentPcs);
+            newZones[index] = { ...newZones[index], areas: updatedAreas, postcodes: Array.from(currentPcs) };
         } else {
-            newSchedule[index].postcodes = syncAreasToPostcodes(updatedAreas);
+            newZones[index] = { ...newZones[index], areas: updatedAreas, postcodes: syncAreasToPostcodes(updatedAreas) };
         }
 
-        setSchedule(newSchedule);
+        setCurrentZones(newZones);
 
         const newAreaInput = [...areaInput];
         newAreaInput[index] = '';
@@ -99,39 +110,57 @@ export default function ManageSchedule() {
     };
 
     const handleRemovePostcode = (index: number, pc: string) => {
-        const newSchedule = [...schedule];
-        const updatedPcs = newSchedule[index].postcodes.filter(p => p !== pc);
-        newSchedule[index].postcodes = updatedPcs;
-        newSchedule[index].areas = syncPostcodesToAreas(updatedPcs);
-        setSchedule(newSchedule);
+        const newZones = [...currentZones];
+        const updatedPcs = newZones[index].postcodes.filter(p => p !== pc);
+        newZones[index] = { ...newZones[index], postcodes: updatedPcs, areas: syncPostcodesToAreas(updatedPcs) };
+        setCurrentZones(newZones);
     };
 
     const handleRemoveArea = (index: number, area: string) => {
-        const newSchedule = [...schedule];
-        const updatedAreas = newSchedule[index].areas.filter(a => a !== area);
-        newSchedule[index].areas = updatedAreas;
-        newSchedule[index].postcodes = syncAreasToPostcodes(updatedAreas);
-        setSchedule(newSchedule);
+        const newZones = [...currentZones];
+        const updatedAreas = newZones[index].areas.filter(a => a !== area);
+        newZones[index] = { ...newZones[index], areas: updatedAreas, postcodes: syncAreasToPostcodes(updatedAreas) };
+        setCurrentZones(newZones);
     };
 
     const handleUpdateField = (index: number, field: 'day' | 'label', value: string) => {
-        const newSchedule = [...schedule];
-        newSchedule[index][field] = value;
-        setSchedule(newSchedule);
+        const newZones = [...currentZones];
+        newZones[index] = { ...newZones[index], [field]: value };
+        setCurrentZones(newZones);
     };
 
     const handleAddZone = () => {
-        setSchedule([...schedule, { day: 'Monday', postcodes: [], areas: [], label: 'New Zone' }]);
+        setCurrentZones([...currentZones, { day: 'Monday', postcodes: [], areas: [], label: 'New Zone' }]);
         setPcInput([...pcInput, '']);
         setAreaInput([...areaInput, '']);
     };
 
     const handleRemoveZone = (index: number) => {
-        setSchedule(schedule.filter((_, i) => i !== index));
+        setCurrentZones(currentZones.filter((_, i) => i !== index));
         setPcInput(pcInput.filter((_, i) => i !== index));
         setAreaInput(areaInput.filter((_, i) => i !== index));
     };
 
+    const handleCopyWeek = () => {
+        const sourceWeek = activeWeek;
+        const targetWeek = sourceWeek === 1 ? 2 : 1;
+        const sourceZones = schedule.weeks[sourceWeek - 1].zones;
+
+        setSchedule(prev => {
+            const newWeeks = [...prev.weeks] as [typeof prev.weeks[0], typeof prev.weeks[1]];
+            newWeeks[targetWeek - 1] = {
+                ...newWeeks[targetWeek - 1],
+                zones: JSON.parse(JSON.stringify(sourceZones)),
+            };
+            return { ...prev, weeks: newWeeks };
+        });
+
+        toast.success(`Week ${sourceWeek} copied to Week ${targetWeek}`);
+    };
+
+    const handleAnchorDateChange = (date: string) => {
+        setSchedule(prev => ({ ...prev, anchorDate: date }));
+    };
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -182,26 +211,74 @@ export default function ManageSchedule() {
                         >
                             <div className="flex items-center gap-3">
                                 <HelpCircle className="w-5 h-5 text-blue-600" />
-                                <div className="text-sm font-medium text-blue-900">How to build your schedule</div>
+                                <div className="text-sm font-medium text-blue-900">How to build your 2-week schedule</div>
                             </div>
                             <X className="w-4 h-4 text-blue-600" />
                         </button>
                         <div className="px-4 pb-4 space-y-2 text-sm text-blue-800">
-                            <p className="font-medium">Two ways to add service areas for each day:</p>
+                            <p className="font-medium">Your schedule rotates on a 2-week cycle:</p>
                             <ul className="space-y-1 ml-4">
-                                <li>📍 <span className="font-medium">Postcodes</span> – Enter specific postcodes (e.g. 2101, 2102)</li>
-                                <li>🗺️ <span className="font-medium">Interactive Map</span> – Click the map icon and zoom into any area across Australia. Click dots to select suburbs and postcodes.</li>
+                                <li>Use the <span className="font-medium">Week 1 / Week 2</span> tabs to configure each week separately</li>
+                                <li>Set the <span className="font-medium">Week 1 Start Date</span> to a Monday — the schedule alternates from there</li>
+                                <li>Use <span className="font-medium">Copy to Week</span> to duplicate one week's setup to the other</li>
                             </ul>
-                            <p className="text-xs text-blue-700 mt-2">Your service area copy will automatically update across the website based on your selections.</p>
                         </div>
                     </motion.div>
                 )}
 
+                {/* Anchor Date + Week Tabs */}
+                <div className="mb-8 space-y-4">
+                    {/* Anchor Date Picker */}
+                    <div className="flex items-center gap-4 bg-card rounded-xl border border-border p-4">
+                        <Calendar className="w-5 h-5 text-primary shrink-0" />
+                        <div className="flex-1">
+                            <Label className="text-sm font-medium">Week 1 Start Date</Label>
+                            <p className="text-xs text-muted-foreground">Pick a Monday. The schedule alternates every 2 weeks from this date.</p>
+                        </div>
+                        <Input
+                            type="date"
+                            value={schedule.anchorDate}
+                            onChange={(e) => handleAnchorDateChange(e.target.value)}
+                            className="w-44"
+                        />
+                    </div>
+
+                    {/* Week Tabs */}
+                    <div className="flex items-center gap-3">
+                        <div className="flex bg-muted rounded-xl p-1">
+                            {([1, 2] as const).map((week) => (
+                                <button
+                                    key={week}
+                                    onClick={() => setActiveWeek(week)}
+                                    className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                                        activeWeek === week
+                                            ? 'bg-primary text-primary-foreground shadow-md'
+                                            : 'text-muted-foreground hover:text-foreground'
+                                    }`}
+                                >
+                                    Week {week}
+                                    <span className="ml-2 text-xs opacity-70">
+                                        ({schedule.weeks[week - 1].zones.length} days)
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleCopyWeek}
+                            className="gap-2"
+                        >
+                            <Copy className="w-4 h-4" />
+                            Copy to Week {activeWeek === 1 ? 2 : 1}
+                        </Button>
+                    </div>
+                </div>
 
                 <div className="grid gap-8">
-                    {schedule.map((zone, index) => (
+                    {currentZones.map((zone, index) => (
                         <motion.div
-                            key={index}
+                            key={`w${activeWeek}-${index}`}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.05 }}
@@ -214,7 +291,7 @@ export default function ManageSchedule() {
                                         </div>
                                         <div>
                                             <h2 className="font-bold text-lg leading-none">{zone.day}</h2>
-                                            <p className="text-xs text-muted-foreground mt-1">{zone.label || 'No Name Set'}</p>
+                                            <p className="text-xs text-muted-foreground mt-1">{zone.label || 'No Name Set'} — Week {activeWeek}</p>
                                         </div>
                                     </div>
                                     <Button
@@ -239,7 +316,7 @@ export default function ManageSchedule() {
                                                         value={zone.day}
                                                         onChange={(e) => handleUpdateField(index, 'day', e.target.value)}
                                                     >
-                                                        {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => (
+                                                        {DAYS.map(day => (
                                                             <option key={day} value={day}>{day}</option>
                                                         ))}
                                                     </select>
@@ -361,7 +438,7 @@ export default function ManageSchedule() {
                         className="w-full py-12 border-dashed border-2 hover:border-primary/50 hover:bg-primary/5 gap-3 rounded-2xl bg-white"
                     >
                         <Plus className="w-6 h-6 text-primary" />
-                        <span className="text-lg font-medium text-foreground">Add New Service Day</span>
+                        <span className="text-lg font-medium text-foreground">Add New Service Day (Week {activeWeek})</span>
                     </Button>
                 </div>
 
@@ -373,8 +450,7 @@ export default function ManageSchedule() {
                             setMapOpen(false);
                         }}
                         onSaveSelections={(savedSelections) => {
-                            // Apply all accumulated selections to schedule
-                            const newSchedule = schedule.map(zone => {
+                            const newZones = currentZones.map(zone => {
                                 const areasForDay = savedSelections.get(zone.day);
                                 if (areasForDay && areasForDay.length > 0) {
                                     const currentAreas = new Set(zone.areas);
@@ -394,10 +470,10 @@ export default function ManageSchedule() {
                                 return zone;
                             });
 
-                            setSchedule(newSchedule);
+                            setCurrentZones(newZones);
                             setMapOpen(false);
                         }}
-                        schedule={schedule}
+                        schedule={currentZones}
                     />
                 )}
             </div>
@@ -405,7 +481,7 @@ export default function ManageSchedule() {
     );
 }
 
-// Add local icon import we missed in types
+// Local Sparkles icon (matches lucide style)
 function Sparkles(props: React.SVGProps<SVGSVGElement>) {
     return (
         <svg

@@ -6,12 +6,7 @@ import heroImage from '@/assets/hero-garden.jpg';
 import { generateServiceAreaText } from '@/lib/serviceAreaHelper';
 import initialZones from '../../data/zones.json';
 
-type Zone = {
-  day: string;
-  postcodes: string[];
-  areas: string[];
-  label: string;
-};
+import type { RotatingSchedule } from '../../types/schedule';
 
 const features = [
   { icon: Star, text: '5-Star Rated' },
@@ -23,8 +18,9 @@ export const Hero = () => {
   const [serviceAreaText, setServiceAreaText] = useState('Servicing Northern Beaches & Greater Sydney, NSW');
 
   useEffect(() => {
-    const data = initialZones as { schedule: Zone[] };
-    const text = generateServiceAreaText(data.schedule);
+    const data = initialZones as RotatingSchedule;
+    const allZones = data.weeks.flatMap(w => w.zones);
+    const text = generateServiceAreaText(allZones);
     setServiceAreaText(`Servicing ${text}`);
   }, []);
 

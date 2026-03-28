@@ -9,12 +9,7 @@ import { toast } from '@/hooks/use-toast';
 import { generateServiceAreaText, generateServiceAreaDescription } from '@/lib/serviceAreaHelper';
 import initialZones from '../../data/zones.json';
 
-type Zone = {
-  day: string;
-  postcodes: string[];
-  areas: string[];
-  label: string;
-};
+import type { RotatingSchedule } from '../../types/schedule';
 
 const baseContactInfo = [
     {
@@ -73,9 +68,10 @@ export const Contact = () => {
   const [contactInfo, setContactInfo] = useState(baseContactInfo);
 
   useEffect(() => {
-    const data = initialZones as { schedule: Zone[] };
-    const serviceAreaText = generateServiceAreaText(data.schedule);
-    const serviceAreaDescription = generateServiceAreaDescription(data.schedule);
+    const data = initialZones as RotatingSchedule;
+    const allZones = data.weeks.flatMap(w => w.zones);
+    const serviceAreaText = generateServiceAreaText(allZones);
+    const serviceAreaDescription = generateServiceAreaDescription(allZones);
 
     // Update the Service Area contact info with dynamic text
     const updatedInfo = baseContactInfo.map(item =>

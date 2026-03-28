@@ -11,25 +11,32 @@ export default async function handler(
 
     const { schedule } = request.body;
 
-    if (!schedule) {
-        return response.status(400).json({ error: 'Schedule data is required' });
+    if (!schedule || !schedule.weeks || !schedule.anchorDate) {
+        return response.status(400).json({
+            error: 'Schedule data is required with weeks array and anchorDate',
+        });
+    }
+
+    if (!Array.isArray(schedule.weeks) || schedule.weeks.length !== 2) {
+        return response.status(400).json({
+            error: 'Schedule must have exactly 2 weeks',
+        });
     }
 
     try {
-        // SAVE TO STORAGE (Vercel KV)
         await kv.set('robs-garden-schedule', schedule);
 
-        console.log('Successfully saved schedule to KV:', schedule);
+        console.log('Successfully saved rotating schedule to KV');
 
         return response.status(200).json({
             success: true,
-            message: 'Schedule saved to database successfully.'
+            message: 'Rotating schedule saved successfully.',
         });
-    } catch (error: any) {
-        console.error('Store error:', error);
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        console.error('Store error:', message);
         return response.status(500).json({
             error: 'Failed to persist schedule',
-            details: error.message
         });
     }
 }

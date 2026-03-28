@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Save, ArrowLeft, Plus, Trash2, MapPin, Calendar, X, Sparkles, HelpCircle } from 'lucide-react';
+import { Save, ArrowLeft, Plus, Trash2, MapPin, Calendar, X, HelpCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import initialZones from '../../data/zones.json';
@@ -145,8 +145,7 @@ export default function ManageSchedule() {
             toast.success('Schedule updated successfully!');
             setTimeout(() => navigate('/'), 1000);
         } catch (error) {
-            toast.success('Schedule updated (Simulated Success)');
-            setTimeout(() => navigate('/'), 1000);
+            toast.error('Failed to save schedule. Please try again or call support.');
         } finally {
             setIsSaving(false);
         }

@@ -52,7 +52,7 @@ export const Header = () => {
           <div className="hidden md:flex items-center gap-4">
             <a href="tel:+61468170318" className="flex items-center gap-2 text-sm font-medium text-primary">
               <Phone className="w-4 h-4" />
-              <span className="hidden xl:inline">0468 170 318</span>
+              <span className="hidden xl:inline">+61 468 170 318</span>
             </a>
             <a href="#contact">
               <Button variant="hero" size="lg">

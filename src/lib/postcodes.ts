@@ -37,8 +37,8 @@ async function loadPostcodes(): Promise<PostcodeEntry[]> {
     const response = await fetch(
       'https://raw.githubusercontent.com/Elkfox/Australian-Postcode-Data/master/au_postcodes.json'
     );
-    postcodeCache = await response.json();
-    return postcodeCache;
+    postcodeCache = await response.json() as PostcodeEntry[];
+    return postcodeCache ?? [];
   } catch (error) {
     console.error('[Postcodes] Failed to load postcode database:', error);
     return [];

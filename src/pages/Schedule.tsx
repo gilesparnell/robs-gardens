@@ -67,7 +67,7 @@ export default function Schedule() {
     <div style={{ padding: '40px', fontFamily: 'sans-serif', maxWidth: '900px', margin: '0 auto' }}>
       <h1>Rob's Gardens - Service Schedule</h1>
       <p style={{ color: '#666', marginBottom: '30px' }}>
-        Current service areas by day. Call 0468 170 318 for bookings or special requests.
+        Current service areas by day. Call +61 468 170 318 for bookings or special requests.
       </p>
 
       {schedule.length === 0 ? (
@@ -121,7 +121,7 @@ export default function Schedule() {
       <div style={{ marginTop: '40px', padding: '20px', backgroundColor: '#e8f4f8', borderRadius: '8px' }}>
         <h3>Ready to Book?</h3>
         <p>
-          To schedule a service, call us at <strong>0468 170 318</strong> or visit our website.
+          To schedule a service, call us at <strong>+61 468 170 318</strong> or visit our website.
         </p>
       </div>
 

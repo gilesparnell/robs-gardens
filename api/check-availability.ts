@@ -99,7 +99,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!zone) {
       return res.status(200).json({
         available: false,
-        message: `We don't currently service postcode ${postcode}. We primarily cover the Northern Beaches and greater Sydney area. Please enter a different postcode or call us at 0468 170 318 for more information.`,
+        message: `We don't currently service postcode ${postcode}. We primarily cover the Northern Beaches and greater Sydney area. Please enter a different postcode or call us at +61 468 170 318 for more information.`,
       });
     }
 
@@ -150,7 +150,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error('[check-availability] Error:', err);
     return res.status(500).json({
       available: false,
-      message: 'Unable to check availability right now. Please call 0468 170 318 for assistance.',
+      message: 'Unable to check availability right now. Please call +61 468 170 318 for assistance.',
       error: err.message,
     });
   }

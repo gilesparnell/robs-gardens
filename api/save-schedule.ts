@@ -17,7 +17,7 @@ export default async function handler(
 
     try {
         // SAVE TO STORAGE (Vercel KV)
-        await kv.set('robs-garden-schedule', { schedule });
+        await kv.set('robs-garden-schedule', schedule);
 
         console.log('Successfully saved schedule to KV:', schedule);
 

@@ -172,7 +172,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.error('[areas-by-day] Error:', err);
     return res.status(500).json({
       available: false,
-      message: 'Unable to check service areas right now. Please call 0468 170 318 for assistance.',
+      message: 'Unable to check service areas right now. Please call +61 468 170 318 for assistance.',
       error: err.message,
     });
   }

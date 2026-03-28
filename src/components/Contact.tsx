@@ -20,7 +20,7 @@ const baseContactInfo = [
     {
       icon: Phone,
       label: 'Call Us',
-      value: '0468 170 318',
+      value: '+61 468 170 318',
       href: 'tel:+61468170318',
       description: 'Speak directly with our team',
     },
@@ -42,7 +42,7 @@ const baseContactInfo = [
     {
       icon: MessageCircle,
       label: 'Send a Text',
-      value: 'SMS 0468 170 318',
+      value: 'SMS +61 468 170 318',
       href: 'sms:+61468170318',
       description: 'Quick text message',
     },

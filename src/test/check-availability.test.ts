@@ -5,8 +5,9 @@
  * when checking service availability for customer postcodes.
  */
 
-import handler from '../check-availability';
-import { VercelRequest, VercelResponse } from '@vercel/node';
+// Note: handler import removed — tests validate data structures, not the actual Vercel handler
+// import handler from '../check-availability';
+// VercelRequest/VercelResponse unused — tests validate data structures only
 
 // Mock zones data (matches zones.json schedule)
 const mockSchedule = [
@@ -44,28 +45,7 @@ const mockSchedule = [
 
 describe('Check Availability API', () => {
   describe('Success Scenarios - Available Postcodes', () => {
-    test('Monday service area (postcode 2101)', async () => {
-      const req = {
-        query: { postcode: '2101' },
-        method: 'GET',
-      } as any as VercelRequest;
-
-      const mockRes = {
-        status: (code: number) => ({
-          json: (data: any) => {
-            expect(code).toBe(200);
-            expect(data.available).toBe(true);
-            expect(data.day).toBe('Monday');
-            expect(data.area).toBe('Elanora Heights');
-            expect(data.message).toContain('Elanora Heights');
-            expect(data.message).toContain('Monday');
-            expect(data.next_date).toBeTruthy();
-          },
-        }),
-        setHeader: () => {},
-      } as any as VercelResponse;
-
-      // This is a logic test - we're verifying the expected behavior
+    test('Monday service area (postcode 2101)', () => {
       const zone = mockSchedule.find(z => z.postcodes.includes('2101'));
       expect(zone).toBeTruthy();
       expect(zone?.day).toBe('Monday');

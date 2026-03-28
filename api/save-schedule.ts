@@ -27,7 +27,7 @@ export default async function handler(
 
     try {
         await put(BLOB_PATH, JSON.stringify(schedule), {
-            access: 'public',
+            access: 'private',
             addRandomSuffix: false,
         });
 

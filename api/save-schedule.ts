@@ -29,6 +29,7 @@ export default async function handler(
         await put(BLOB_PATH, JSON.stringify(schedule), {
             access: 'private',
             addRandomSuffix: false,
+            allowOverwrite: true,
         });
 
         console.log('Successfully saved rotating schedule to Blob');

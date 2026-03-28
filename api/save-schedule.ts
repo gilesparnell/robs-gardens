@@ -1,5 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { kv } from '@vercel/kv';
+import { put } from '@vercel/blob';
+
+const BLOB_PATH = 'robs-garden-schedule.json';
 
 export default async function handler(
     request: VercelRequest,
@@ -24,9 +26,12 @@ export default async function handler(
     }
 
     try {
-        await kv.set('robs-garden-schedule', schedule);
+        await put(BLOB_PATH, JSON.stringify(schedule), {
+            access: 'public',
+            addRandomSuffix: false,
+        });
 
-        console.log('Successfully saved rotating schedule to KV');
+        console.log('Successfully saved rotating schedule to Blob');
 
         return response.status(200).json({
             success: true,

@@ -1,54 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { kv } from '@vercel/kv';
+import { loadSchedule } from './lib/loadSchedule';
 import { getWeekForDate } from './lib/weekUtils';
-
-type Zone = {
-  day: string;
-  postcodes: string[];
-  areas: string[];
-  label: string;
-};
-
-type WeekSchedule = {
-  week: 1 | 2;
-  zones: Zone[];
-};
-
-type RotatingSchedule = {
-  weeks: [WeekSchedule, WeekSchedule];
-  anchorDate: string;
-};
-
-// Fallback schedule data
-const DEFAULT_SCHEDULE: RotatingSchedule = {
-  weeks: [
-    {
-      week: 1,
-      zones: [
-        { day: 'Monday', postcodes: ['2101', '2102'], areas: ['Elanora Heights', 'Narrabeen', 'North Narrabeen'], label: 'Northern Beaches Central' },
-        { day: 'Tuesday', postcodes: ['2070', '2071', '2073'], areas: ['Lindfield', 'Killara', 'Pymble'], label: 'Upper North Shore' },
-        { day: 'Wednesday', postcodes: ['2103', '2104', '2105'], areas: ['Mona Vale', 'Bayview', 'Newport'], label: 'Northern Beaches North' },
-        { day: 'Thursday', postcodes: ['2067', '2068', '2069'], areas: ['Chatswood', 'Castlecrag', 'Roseville'], label: 'Lower North Shore' },
-        { day: 'Friday', postcodes: ['2106', '2107', '2108'], areas: ['Bilgola', 'Avalon', 'Palm Beach'], label: 'Palm Beach / Peninsula' },
-      ],
-    },
-    { week: 2, zones: [] },
-  ],
-  anchorDate: '2026-03-30',
-};
-
-function normaliseSchedule(stored: unknown): RotatingSchedule {
-  if (stored && typeof stored === 'object' && 'weeks' in (stored as Record<string, unknown>)) {
-    return stored as RotatingSchedule;
-  }
-  if (Array.isArray(stored)) {
-    return {
-      weeks: [{ week: 1, zones: stored as Zone[] }, { week: 2, zones: [] }],
-      anchorDate: DEFAULT_SCHEDULE.anchorDate,
-    };
-  }
-  return DEFAULT_SCHEDULE;
-}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -67,15 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    let schedule: RotatingSchedule;
-    try {
-      const stored = await kv.get('robs-garden-schedule');
-      schedule = stored ? normaliseSchedule(stored) : DEFAULT_SCHEDULE;
-    } catch {
-      console.warn('[check-availability] KV read failed, falling back to static data');
-      schedule = DEFAULT_SCHEDULE;
-    }
-
+    const schedule = await loadSchedule();
     const trimmedPostcode = postcode.trim();
 
     // Search BOTH weeks for matches

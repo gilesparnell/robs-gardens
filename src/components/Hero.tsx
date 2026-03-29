@@ -1,12 +1,7 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Star, Shield, Leaf, Mic } from 'lucide-react';
 import heroImage from '@/assets/hero-garden.jpg';
-import { generateServiceAreaText } from '@/lib/serviceAreaHelper';
-import initialZones from '../../data/zones.json';
-
-import type { RotatingSchedule } from '../../types/schedule';
 
 const features = [
   { icon: Star, text: '5-Star Rated' },
@@ -15,14 +10,7 @@ const features = [
 ];
 
 export const Hero = () => {
-  const [serviceAreaText, setServiceAreaText] = useState('Servicing Northern Beaches & Greater Sydney, NSW');
-
-  useEffect(() => {
-    const data = initialZones as RotatingSchedule;
-    const allZones = data.weeks.flatMap(w => w.zones);
-    const text = generateServiceAreaText(allZones);
-    setServiceAreaText(`Servicing ${text}`);
-  }, []);
+  const serviceAreaText = 'Servicing Greater Sydney area, Northern Beaches, Eastern Suburbs, Greater Western Sydney, Central Coast';
 
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">

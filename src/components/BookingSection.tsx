@@ -1,11 +1,21 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { CalendarCheck, QrCode } from 'lucide-react';
-
-const GHL_BOOKING_URL = 'https://api.leadconnectorhq.com/widget/booking/Cmkj9J9vHBQlVwFmxZPC';
-const QR_CODE_URL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(GHL_BOOKING_URL)}`;
+import { Phone, Mic } from 'lucide-react';
 
 export const BookingSection = () => {
+  const handleOrbClick = () => {
+    const allElements = document.querySelectorAll('*');
+    for (const el of allElements) {
+      if (el.shadowRoot) {
+        const shadowButton = el.shadowRoot?.querySelector('button[id*="lc_text-widget"]');
+        if (shadowButton) {
+          (shadowButton as HTMLButtonElement).click();
+          return;
+        }
+      }
+    }
+  };
+
   return (
     <section id="book" className="py-24 bg-gradient-nature">
       <div className="container mx-auto px-4">
@@ -21,33 +31,37 @@ export const BookingSection = () => {
             Schedule Your Service
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Pick a time that works for you. Book online instantly or scan the QR code from your phone.
+            Book online using Tom, the virtual assistant, or call{' '}
+            <a href="tel:+61468170318" className="text-primary font-semibold hover:underline">
+              +61 468 170 318
+            </a>
           </p>
         </motion.div>
 
-        <div className="max-w-5xl mx-auto grid lg:grid-cols-3 gap-8 items-start">
-          {/* Booking Calendar Embed */}
+        <div className="max-w-2xl mx-auto grid sm:grid-cols-2 gap-6">
+          {/* Chat with Tom */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-2 bg-card rounded-2xl shadow-elevated overflow-hidden border border-border"
+            className="bg-card rounded-2xl shadow-elevated border border-border p-8 text-center"
           >
-            <div className="p-4 bg-primary/5 border-b border-border flex items-center gap-3">
-              <CalendarCheck className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold text-foreground">Book an Appointment</h3>
+            <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <Mic className="w-7 h-7 text-primary" />
             </div>
-            <iframe
-              src={GHL_BOOKING_URL}
-              className="w-full border-0"
-              style={{ minHeight: '600px' }}
-              title="Book an appointment with Rob Gardening and Maintenance"
-              loading="lazy"
-            />
+            <h3 className="font-serif text-xl font-semibold text-foreground mb-2">
+              Chat with Tom
+            </h3>
+            <p className="text-muted-foreground text-sm mb-6">
+              Our AI virtual assistant can help you book a service, get a quote, or answer any questions instantly.
+            </p>
+            <Button variant="hero" size="lg" onClick={handleOrbClick}>
+              Start Chat
+            </Button>
           </motion.div>
 
-          {/* QR Code Card */}
+          {/* Call Us */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -56,35 +70,17 @@ export const BookingSection = () => {
             className="bg-card rounded-2xl shadow-elevated border border-border p-8 text-center"
           >
             <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <QrCode className="w-7 h-7 text-primary" />
+              <Phone className="w-7 h-7 text-primary" />
             </div>
             <h3 className="font-serif text-xl font-semibold text-foreground mb-2">
-              Scan to Book
+              Call Us Direct
             </h3>
             <p className="text-muted-foreground text-sm mb-6">
-              Use your phone camera to scan this QR code and book an appointment instantly.
+              Prefer to speak with someone? Give us a call and we'll get you booked in.
             </p>
-            <div className="bg-background rounded-xl p-4 inline-block mb-6">
-              <img
-                src={QR_CODE_URL}
-                alt="QR code to book an appointment with Rob Gardening and Maintenance"
-                width={200}
-                height={200}
-                className="mx-auto"
-                loading="lazy"
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Perfect for sharing with clients & agents
-            </p>
-            <a
-              href={GHL_BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-4"
-            >
-              <Button variant="outline" size="sm">
-                Open Booking Page
+            <a href="tel:+61468170318">
+              <Button variant="outline" size="lg">
+                +61 468 170 318
               </Button>
             </a>
           </motion.div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,10 +6,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Mic } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { generateServiceAreaText, generateServiceAreaDescription } from '@/lib/serviceAreaHelper';
-import initialZones from '../../data/zones.json';
-
-import type { RotatingSchedule } from '../../types/schedule';
 
 const baseContactInfo = [
     {
@@ -44,7 +40,7 @@ const baseContactInfo = [
     {
       icon: MapPin,
       label: 'Service Area',
-      value: 'Northern Beaches & Greater Sydney',
+      value: 'Greater Sydney area, Northern Beaches, Eastern Suburbs, Greater Western Sydney, Central Coast',
       href: null,
       description: 'Homes, strata, business parks & aged care',
     },
@@ -65,23 +61,7 @@ export const Contact = () => {
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [contactInfo, setContactInfo] = useState(baseContactInfo);
-
-  useEffect(() => {
-    const data = initialZones as RotatingSchedule;
-    const allZones = data.weeks.flatMap(w => w.zones);
-    const serviceAreaText = generateServiceAreaText(allZones);
-    const serviceAreaDescription = generateServiceAreaDescription(allZones);
-
-    // Update the Service Area contact info with dynamic text
-    const updatedInfo = baseContactInfo.map(item =>
-      item.label === 'Service Area'
-        ? { ...item, value: serviceAreaText, description: serviceAreaDescription }
-        : item
-    );
-
-    setContactInfo(updatedInfo);
-  }, []);
+  const contactInfo = baseContactInfo;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,11 +166,11 @@ export const Contact = () => {
                         {item.value}
                       </button>
                     ) : item.href ? (
-                      <a href={item.href} className="font-medium text-foreground hover:text-primary transition-colors block truncate">
+                      <a href={item.href} className="font-medium text-foreground hover:text-primary transition-colors block">
                         {item.value}
                       </a>
                     ) : (
-                      <p className="font-medium text-foreground truncate">{item.value}</p>
+                      <p className="font-medium text-foreground">{item.value}</p>
                     )}
                     <p className="text-xs text-muted-foreground/70">{item.description}</p>
                   </div>

@@ -10,9 +10,7 @@ export const Footer = () => {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-primary-foreground flex items-center justify-center">
-                <span className="text-primary font-serif text-lg font-bold">R</span>
-              </div>
+              <img src="/rob-gardens-logo.jpg" alt="Rob's Garden Services" className="w-10 h-10 rounded-full object-cover" />
               <div>
                 <h3 className="font-serif text-lg font-semibold leading-tight">
                   Rob Gardening
@@ -21,7 +19,7 @@ export const Footer = () => {
               </div>
             </div>
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
-              The Art of Green Care. 3 dedicated teams servicing homes, strata, business parks and aged care across the Northern Beaches and Greater Sydney.
+              The Art of Green Care. 3 dedicated teams servicing homes, strata, business parks and aged care across Greater Sydney, Northern Beaches, Eastern Suburbs, Greater Western Sydney and the Central Coast.
             </p>
           </div>
 
@@ -72,12 +70,12 @@ export const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <MapPin className="w-4 h-4 text-primary-foreground/70" />
-                <span className="text-sm text-primary-foreground/70">Northern Beaches & Greater Sydney, NSW</span>
+                <span className="text-sm text-primary-foreground/70">Greater Sydney area, Northern Beaches, Eastern Suburbs, Greater Western Sydney, Central Coast</span>
               </li>
             </ul>
             <div className="flex gap-4 mt-6">
               <a
-                href="https://www.instagram.com/robgardensandmaintenance/"
+                href="https://www.instagram.com/rob_gardens?igsh=MXV2YXJlb2lvNHdlYQ=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
@@ -86,7 +84,9 @@ export const Footer = () => {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/share/1DTAx7wU9h/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
                 aria-label="Facebook"
               >

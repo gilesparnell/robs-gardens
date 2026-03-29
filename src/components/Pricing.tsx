@@ -7,18 +7,19 @@ const pricingPlans = [
   {
     name: 'Regular Maintenance',
     description: 'Ongoing garden care',
-    price: 150,
+    price: null,
+    priceText: '$150',
     frequency: 'per hour',
     features: [
-      'Team of two professionals',
-      'Lawn mowing & edging',
-      'Hedge trimming & pruning',
-      'Weeding & mulching',
-      'Green waste removal',
-      'Blow-outs included',
+      { text: 'Team of two professionals', bold: true },
+      { text: 'Lawn mowing & edging', bold: false },
+      { text: 'Hedge trimming & pruning', bold: false },
+      { text: 'Weeding & mulching', bold: false },
+      { text: 'Green waste removal', bold: false },
+      { text: 'Blow-outs included', bold: false },
     ],
     popular: true,
-    note: 'Most homes take 2–4 hours',
+    note: null,
   },
   {
     name: 'Pre-Sale Makeover',
@@ -27,12 +28,12 @@ const pricingPlans = [
     priceText: '$2K – $4K',
     frequency: 'typical project',
     features: [
-      'Full property transformation',
-      '3–4 day turnaround typical',
-      'Waterblasting & hard surfaces',
-      'New planting & mulching',
-      'Ongoing campaign maintenance option',
-      'Custom quote based on property size',
+      { text: 'Full property transformation', bold: false },
+      { text: '3–4 day turnaround typical', bold: false },
+      { text: 'Waterblasting & hard surfaces', bold: false },
+      { text: 'New planting & mulching', bold: false },
+      { text: 'Ongoing campaign maintenance option', bold: false },
+      { text: 'Custom quote based on property size', bold: false },
     ],
     popular: false,
     note: 'Quote determines crew size & scope',
@@ -40,18 +41,18 @@ const pricingPlans = [
   {
     name: 'Ride-On Mower',
     description: 'Large property solutions',
-    price: 200,
-    frequency: 'per hour hire',
+    price: null,
+    priceText: 'From $175',
+    frequency: 'service options',
     features: [
-      'Professional ride-on mower',
-      'We do it or you hire it',
-      'Delivery within 20 miles: $200',
-      'Daily rates available',
-      'Perfect for acreage & estates',
-      'Business parks & aged care',
+      { text: '$175 — 1 person of our team drives the mower', bold: false },
+      { text: '$200 Dry Hire — rent out per day (additional costs for delivery and pick up, depending on location)', bold: false },
+      { text: '$300–$400 — Fri–Sun', bold: false },
+      { text: 'Perfect for acreage & estates', bold: false },
+      { text: 'Business parks & aged care', bold: false },
     ],
     popular: false,
-    note: 'Or $150/hr with our team of two',
+    note: null,
   },
 ];
 
@@ -99,23 +100,14 @@ export const Pricing = () => {
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="mb-6">
-                    {plan.price ? (
-                      <>
-                        <span className="text-4xl font-bold text-foreground">${plan.price}</span>
-                        <span className="text-muted-foreground ml-2">{plan.frequency}</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-3xl font-bold text-foreground">{plan.priceText}</span>
-                        <span className="text-muted-foreground ml-2 block text-sm mt-1">{plan.frequency}</span>
-                      </>
-                    )}
+                    <span className="text-3xl font-bold text-foreground">{plan.priceText}</span>
+                    <span className="text-muted-foreground ml-2 block text-sm mt-1">{plan.frequency}</span>
                   </div>
                   <ul className="space-y-3 mb-6 text-left">
                     {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-3">
+                      <li key={feature.text} className="flex items-start gap-3">
                         <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                        <span className="text-muted-foreground text-sm">{feature}</span>
+                        <span className={`text-sm ${feature.bold ? 'font-bold text-foreground' : 'text-muted-foreground'}`}>{feature.text}</span>
                       </li>
                     ))}
                   </ul>

@@ -24,9 +24,7 @@ export const Header = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <a href="#" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-serif text-lg font-bold">R</span>
-            </div>
+            <img src="/rob-gardens-logo.jpg" alt="Rob's Garden Services" className="w-10 h-10 rounded-full object-cover" />
             <div className="hidden sm:block">
               <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">
                 Rob Gardening

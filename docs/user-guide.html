@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rob's Gardens — User Guide</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117; --surface: #151821; --surface2: #1a1f2e;
+    --border: #1e293b; --border2: #2d3748;
+    --text1: #e2e8f0; --text2: #94a3b8; --text3: #475569;
+    --mono: 'SF Mono', Menlo, monospace;
+    --green: #34d399; --green-bg: #0a1f14; --green-border: #059669;
+    --amber: #fbbf24; --amber-bg: #1a1208; --amber-border: #d97706;
+    --blue: #60a5fa; --blue-bg: #0f1a2e; --blue-border: #3b82f6;
+    --purple: #a78bfa; --purple-bg: #1a1035; --purple-border: #6d28d9;
+    --teal: #2dd4bf; --teal-bg: #051a18; --teal-border: #0d9488;
+    --rose: #fb7185; --rose-bg: #1a0808; --rose-border: #e11d48;
+    --coral: #fb923c; --coral-bg: #1a0f08; --coral-border: #ea580c;
+    --slate: #9ca3af; --slate-bg: #111827; --slate-border: #374151;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--text1);
+    min-height: 100vh; padding: 40px 24px 80px;
+    line-height: 1.6;
+  }
+  .guide { max-width: 900px; margin: 0 auto; }
+
+  .guide-header { text-align: center; margin-bottom: 48px; }
+  .guide-header h1 {
+    font-size: 28px; font-weight: 700; color: var(--text1);
+    margin-bottom: 8px; letter-spacing: -0.02em;
+  }
+  .guide-header p { font-size: 14px; color: var(--text3); }
+  .guide-header .version {
+    display: inline-block; font-size: 10px; font-family: var(--mono);
+    color: var(--teal); background: var(--teal-bg); border: 1px solid var(--teal-border);
+    padding: 2px 8px; border-radius: 4px; margin-top: 12px;
+  }
+  .nav-links {
+    display: flex; gap: 12px; justify-content: center;
+    margin-top: 16px; flex-wrap: wrap;
+  }
+  .nav-link {
+    font-size: 12px; font-weight: 600; padding: 6px 16px;
+    border-radius: 6px; text-decoration: none; transition: opacity 0.2s;
+  }
+  .nav-link:hover { opacity: 0.8; }
+  .nav-link.green { color: var(--green); background: var(--green-bg); border: 1px solid var(--green-border); }
+  .nav-link.purple { color: var(--purple); background: var(--purple-bg); border: 1px solid var(--purple-border); }
+
+  .toc {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px 28px; margin-bottom: 40px;
+  }
+  .toc-title { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+  .toc-item {
+    font-size: 13px; color: var(--blue); text-decoration: none;
+    display: flex; align-items: center; gap: 8px; padding: 4px 0;
+  }
+  .toc-item:hover { color: var(--text1); }
+  .toc-num { font-family: var(--mono); font-size: 10px; color: var(--text3); min-width: 20px; }
+
+  .section { margin-bottom: 48px; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 18px; font-weight: 700; color: var(--text1); }
+  .section-header .section-sub { font-size: 12px; color: var(--text3); }
+
+  .concept-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .concept-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; position: relative; overflow: hidden;
+  }
+  .concept-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .concept-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .concept-card p { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .concept-card .badge {
+    display: inline-block; font-size: 9px; font-weight: 700; font-family: var(--mono);
+    padding: 2px 6px; border-radius: 3px; margin-top: 10px; letter-spacing: 0.05em;
+  }
+
+  .card-purple::before { background: var(--purple); } .card-purple h3 { color: var(--purple); }
+  .card-blue::before { background: var(--blue); } .card-blue h3 { color: var(--blue); }
+  .card-green::before { background: var(--green); } .card-green h3 { color: var(--green); }
+  .card-amber::before { background: var(--amber); } .card-amber h3 { color: var(--amber); }
+  .card-teal::before { background: var(--teal); } .card-teal h3 { color: var(--teal); }
+  .card-coral::before { background: var(--coral); } .card-coral h3 { color: var(--coral); }
+  .card-rose::before { background: var(--rose); } .card-rose h3 { color: var(--rose); }
+
+  .flow {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; margin-bottom: 24px;
+  }
+  .flow-title {
+    font-size: 11px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;
+  }
+  .flow-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 0; }
+  .flow-step {
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 10px 16px; position: relative;
+  }
+  .flow-step .step-num {
+    font-size: 9px; font-family: var(--mono); color: var(--text3);
+    margin-bottom: 2px;
+  }
+  .flow-step .step-text { font-size: 12px; color: var(--text2); }
+  .flow-step .step-detail { font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .flow-arrow {
+    color: var(--text3); font-size: 16px; padding: 0 8px; flex-shrink: 0;
+  }
+
+  .status-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-bottom: 24px; }
+  .status-chip {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .status-label { font-size: 12px; font-weight: 600; }
+  .status-desc { font-size: 10px; color: var(--text3); }
+
+  .tip {
+    background: var(--teal-bg); border: 1px solid var(--teal-border);
+    border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .tip-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .tip-text strong { color: var(--teal); }
+
+  .warn {
+    background: var(--amber-bg); border: 1px solid var(--amber-border);
+    border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .warn-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .warn-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .warn-text strong { color: var(--amber); }
+
+  .ref-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  .ref-table th {
+    text-align: left; font-size: 10px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    padding: 8px 12px; border-bottom: 2px solid var(--border);
+  }
+  .ref-table td {
+    font-size: 12px; color: var(--text2); padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ref-table td:first-child { font-weight: 600; color: var(--text1); }
+
+  .feature-list { list-style: none; padding: 0; }
+  .feature-list li {
+    font-size: 12px; color: var(--text2); padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .feature-list li:last-child { border-bottom: none; }
+  .feature-list .feat-icon { font-size: 12px; flex-shrink: 0; margin-top: 2px; }
+
+  .desc { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+
+  .code-block {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;
+    font-family: var(--mono); font-size: 11px; color: var(--text2);
+    line-height: 1.8; overflow-x: auto; white-space: pre;
+  }
+  .code-block .code-comment { color: var(--text3); }
+  .code-block .code-key { color: var(--purple); }
+  .code-block .code-string { color: var(--green); }
+  .code-block .code-bool { color: var(--coral); }
+
+  .sub-heading {
+    font-size: 15px; font-weight: 700; color: var(--text1);
+    margin: 24px 0 12px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .flow-steps { flex-direction: column; gap: 0; }
+    .flow-arrow { transform: rotate(90deg); padding: 4px 0; }
+    .concept-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="guide">
+
+  <!-- HEADER -->
+  <div class="guide-header">
+    <h1>Rob's Gardens</h1>
+    <p>Landscaping website with AI-powered geo availability, postcode scheduling, and GHL voice/chat booking.</p>
+    <span class="version">Updated 2026-04-12</span>
+    <div class="nav-links">
+      <a class="nav-link green" href="index.html">&#128200; Project Docs</a>
+      <a class="nav-link purple" href="https://github.com/gilesparnell/robs-gardens" target="_blank" rel="noopener">&#128506; GitHub Repository</a>
+    </div>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <div class="toc-title">In This Guide</div>
+    <div class="toc-grid">
+      <a class="toc-item" href="#overview"><span class="toc-num">01</span> Overview</a>
+      <a class="toc-item" href="#geo-system"><span class="toc-num">02</span> Geo Availability System</a>
+      <a class="toc-item" href="#postcode-lookup"><span class="toc-num">03</span> Postcode Lookup</a>
+      <a class="toc-item" href="#areas-by-day"><span class="toc-num">04</span> Areas by Day</a>
+      <a class="toc-item" href="#rotating-schedule"><span class="toc-num">05</span> 2-Week Rotating Schedule</a>
+      <a class="toc-item" href="#manage-schedule"><span class="toc-num">06</span> Managing the Schedule</a>
+      <a class="toc-item" href="#service-zones"><span class="toc-num">07</span> Service Zones</a>
+      <a class="toc-item" href="#ghl-integration"><span class="toc-num">08</span> GHL AI Integration</a>
+      <a class="toc-item" href="#services"><span class="toc-num">09</span> Services &amp; Pricing</a>
+      <a class="toc-item" href="#booking"><span class="toc-num">10</span> Booking Flow</a>
+      <a class="toc-item" href="#pages"><span class="toc-num">11</span> Pages &amp; Navigation</a>
+      <a class="toc-item" href="#api-reference"><span class="toc-num">12</span> API Reference</a>
+      <a class="toc-item" href="#contact"><span class="toc-num">13</span> Contact &amp; Support</a>
+    </div>
+  </div>
+
+  <!-- 1. OVERVIEW -->
+  <div class="section" id="overview">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--teal-bg);border:1px solid var(--teal-border)">&#127793;</div>
+      <div><h2>Overview</h2><div class="section-sub">What is Rob's Gardens?</div></div>
+    </div>
+    <p class="desc">
+      Rob's Gardens is a landscaping business website for greater Sydney. The core feature is a <strong>geo availability system</strong> that maps 2000+ Australian postcodes to a rotating 2-week service schedule. Customers can check if their area is serviced and when, either through the GHL AI chatbot (Tom) or the public schedule page. Admins manage service zones through an interactive map interface.
+    </p>
+    <div class="flow">
+      <div class="flow-title">How It All Connects</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text" style="color:var(--green)">Customer asks</div>
+          <div class="step-detail">"Do you service 2101?"</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-text" style="color:var(--blue)">GHL AI calls API</div>
+          <div class="step-detail">/api/check-availability</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-text" style="color:var(--purple)">API checks schedule</div>
+          <div class="step-detail">Vercel Blob Storage</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-text" style="color:var(--amber)">Returns result</div>
+          <div class="step-detail">Day, area, next date</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">5</div>
+          <div class="step-text" style="color:var(--coral)">AI responds</div>
+          <div class="step-detail">"We service Mondays!"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. GEO AVAILABILITY SYSTEM -->
+  <div class="section" id="geo-system">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--green-bg);border:1px solid var(--green-border)">&#128205;</div>
+      <div><h2>Geo Availability System</h2><div class="section-sub">The core engine behind service area lookups</div></div>
+    </div>
+    <p class="desc">
+      The geo system is the backbone of the site. It connects customer postcodes to service zones, calculates which week of the rotating schedule we're in, and returns human-friendly messages that the GHL AI bot can relay directly to customers.
+    </p>
+    <div class="concept-row">
+      <div class="concept-card card-green">
+        <h3>Postcode Database</h3>
+        <p>2000+ Australian postcodes mapped to suburb names. Supports both postcode-to-suburb and suburb-to-postcode lookups with fuzzy matching.</p>
+        <span class="badge" style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)">2000+ Entries</span>
+      </div>
+      <div class="concept-card card-blue">
+        <h3>Service Zones</h3>
+        <p>5 geographic zones, one per weekday (Mon&ndash;Fri). Each zone covers a cluster of suburbs/postcodes in greater Sydney.</p>
+        <span class="badge" style="background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)">5 Zones</span>
+      </div>
+      <div class="concept-card card-purple">
+        <h3>Rotating Schedule</h3>
+        <p>2-week rotation anchored to a start date. Week 1 and Week 2 can have different zone assignments, enabling fortnightly service patterns.</p>
+        <span class="badge" style="background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)">2-Week Cycle</span>
+      </div>
+    </div>
+    <div class="concept-row">
+      <div class="concept-card card-amber">
+        <h3>Next Date Calculation</h3>
+        <p>Automatically calculates the next service date for a given postcode based on today's date and the rotating schedule. Accounts for week parity.</p>
+        <span class="badge" style="background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)">Auto-Calculated</span>
+      </div>
+      <div class="concept-card card-teal">
+        <h3>Human-Friendly Messages</h3>
+        <p>Every API response includes a <code>message</code> field written for the AI bot to relay directly. No parsing needed &mdash; just forward to the customer.</p>
+        <span class="badge" style="background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)">AI-Ready</span>
+      </div>
+      <div class="concept-card card-coral">
+        <h3>Graceful Fallback</h3>
+        <p>If Vercel Blob Storage is unavailable, the API falls back to the static <code>data/zones.json</code> file. Service never goes down.</p>
+        <span class="badge" style="background:var(--coral-bg);color:var(--coral);border:1px solid var(--coral-border)">Always On</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. POSTCODE LOOKUP -->
+  <div class="section" id="postcode-lookup">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--blue-bg);border:1px solid var(--blue-border)">&#128269;</div>
+      <div><h2>Postcode Lookup</h2><div class="section-sub">How "Do you service my area?" works</div></div>
+    </div>
+    <p class="desc">
+      The postcode lookup is the most-used feature. A customer provides their postcode (e.g. 2101), and the system tells them whether that area is serviced, which day, and the next available date.
+    </p>
+
+    <div class="sub-heading">How to Check a Postcode</div>
+    <div class="flow">
+      <div class="flow-title">Customer Journey</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text" style="color:var(--green)">Customer provides postcode</div>
+          <div class="step-detail">Via chat, voice, or directly</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-text" style="color:var(--blue)">API scans all zones</div>
+          <div class="step-detail">Both Week 1 and Week 2</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-text" style="color:var(--purple)">Match found?</div>
+          <div class="step-detail">Postcode in zone's list</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-text" style="color:var(--amber)">Calculate next date</div>
+          <div class="step-detail">Based on today + week parity</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-heading">Example: Postcode Is Serviced</div>
+    <div class="code-block"><span class="code-comment">// Request</span>
+GET /api/check-availability?postcode=2101
+
+<span class="code-comment">// Response</span>
+{
+  <span class="code-key">"available"</span>: <span class="code-bool">true</span>,
+  <span class="code-key">"day"</span>: <span class="code-string">"Monday"</span>,
+  <span class="code-key">"area"</span>: <span class="code-string">"Elanora Heights"</span>,
+  <span class="code-key">"week"</span>: 1,
+  <span class="code-key">"next_date"</span>: <span class="code-string">"Monday 17 March 2026"</span>,
+  <span class="code-key">"message"</span>: <span class="code-string">"Great! We service Elanora Heights (postcode 2101).
+             We're available on Mondays (Week 1), with our next
+             service scheduled for Monday 17 March 2026.
+             Would you like to book?"</span>,
+  <span class="code-key">"matches"</span>: [
+    {
+      <span class="code-key">"week"</span>: 1,
+      <span class="code-key">"day"</span>: <span class="code-string">"Monday"</span>,
+      <span class="code-key">"area"</span>: <span class="code-string">"Elanora Heights"</span>,
+      <span class="code-key">"label"</span>: <span class="code-string">"Northern Beaches Central"</span>,
+      <span class="code-key">"nextDate"</span>: <span class="code-string">"Monday 17 March 2026"</span>
+    }
+  ]
+}</div>
+
+    <div class="sub-heading">Example: Postcode Not Serviced</div>
+    <div class="code-block"><span class="code-comment">// Request</span>
+GET /api/check-availability?postcode=2000
+
+<span class="code-comment">// Response</span>
+{
+  <span class="code-key">"available"</span>: <span class="code-bool">false</span>,
+  <span class="code-key">"message"</span>: <span class="code-string">"We don't currently service postcode 2000.
+             We primarily cover the Northern Beaches and
+             greater Sydney area. Please enter a different
+             postcode or call +61 468 170 318."</span>
+}</div>
+
+    <div class="tip">
+      <span class="tip-icon">&#9432;</span>
+      <span class="tip-text">The API accepts both <strong>GET</strong> (query param <code>?postcode=2101</code>) and <strong>POST</strong> (JSON body <code>{"postcode":"2101"}</code>). CORS is enabled so the GHL AI can call it from anywhere.</span>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">&#9432;</span>
+      <span class="tip-text">A postcode can appear in <strong>multiple weeks</strong>. The <code>matches</code> array returns all matching zone/week combinations, and the top-level fields use the <strong>soonest</strong> next date.</span>
+    </div>
+  </div>
+
+  <!-- 4. AREAS BY DAY -->
+  <div class="section" id="areas-by-day">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--purple-bg);border:1px solid var(--purple-border)">&#128197;</div>
+      <div><h2>Areas by Day</h2><div class="section-sub">How "What areas do you cover on Monday?" works</div></div>
+    </div>
+    <p class="desc">
+      The second endpoint answers day-based queries. When a customer asks "What areas do you service on Tuesday?", the API returns every suburb and postcode for that day's zone.
+    </p>
+
+    <div class="sub-heading">Example Response</div>
+    <div class="code-block"><span class="code-comment">// Request</span>
+GET /api/areas-by-day?day=Monday
+
+<span class="code-comment">// Response</span>
+{
+  <span class="code-key">"available"</span>: <span class="code-bool">true</span>,
+  <span class="code-key">"week"</span>: 1,
+  <span class="code-key">"day"</span>: <span class="code-string">"Monday"</span>,
+  <span class="code-key">"label"</span>: <span class="code-string">"Northern Beaches Central"</span>,
+  <span class="code-key">"areas"</span>: [
+    { <span class="code-key">"name"</span>: <span class="code-string">"Elanora Heights"</span>, <span class="code-key">"postcode"</span>: <span class="code-string">"2101"</span> },
+    { <span class="code-key">"name"</span>: <span class="code-string">"Narrabeen"</span>, <span class="code-key">"postcode"</span>: <span class="code-string">"2101"</span> },
+    { <span class="code-key">"name"</span>: <span class="code-string">"North Narrabeen"</span>, <span class="code-key">"postcode"</span>: <span class="code-string">"2102"</span> }
+  ],
+  <span class="code-key">"postcodes"</span>: [<span class="code-string">"2101"</span>, <span class="code-string">"2102"</span>],
+  <span class="code-key">"message"</span>: <span class="code-string">"On Mondays, we service the following areas:
+             Elanora Heights (2101), Narrabeen (2101),
+             North Narrabeen (2102)."</span>
+}</div>
+
+    <div class="tip">
+      <span class="tip-icon">&#9432;</span>
+      <span class="tip-text">The <strong>day</strong> parameter is case-insensitive. <code>monday</code>, <code>Monday</code>, and <code>MONDAY</code> all work. The current week number is auto-detected from today's date.</span>
+    </div>
+  </div>
+
+  <!-- 5. 2-WEEK ROTATING SCHEDULE -->
+  <div class="section" id="rotating-schedule">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--amber-bg);border:1px solid var(--amber-border)">&#128260;</div>
+      <div><h2>2-Week Rotating Schedule</h2><div class="section-sub">How the fortnightly cycle works</div></div>
+    </div>
+    <p class="desc">
+      The schedule operates on a 2-week rotation anchored to a fixed start date. The system calculates whether today is in Week 1 or Week 2, and returns results accordingly. This allows different suburbs to be serviced on alternate weeks.
+    </p>
+
+    <div class="sub-heading">Current Default Schedule (Week 1)</div>
+    <table class="ref-table">
+      <thead>
+        <tr><th>Day</th><th>Zone Label</th><th>Postcodes</th><th>Suburbs</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Monday</td><td>Northern Beaches Central</td><td>2101, 2102</td><td>Elanora Heights, Narrabeen, North Narrabeen</td></tr>
+        <tr><td>Tuesday</td><td>Upper North Shore</td><td>2070, 2071, 2073</td><td>Lindfield, Killara, Pymble</td></tr>
+        <tr><td>Wednesday</td><td>Northern Beaches North</td><td>2103, 2104, 2105</td><td>Mona Vale, Bayview, Newport</td></tr>
+        <tr><td>Thursday</td><td>Lower North Shore</td><td>2067, 2068, 2069</td><td>Chatswood, Castlecrag, Roseville</td></tr>
+        <tr><td>Friday</td><td>Palm Beach / Peninsula</td><td>2106, 2107, 2108</td><td>Bilgola, Avalon, Palm Beach</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">How Week Parity Works</div>
+    <div class="flow">
+      <div class="flow-title">Week Calculation</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text" style="color:var(--teal)">Anchor date set</div>
+          <div class="step-detail">e.g. 2026-03-30 = Week 1 start</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-text" style="color:var(--blue)">Count days elapsed</div>
+          <div class="step-detail">From anchor to today</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-text" style="color:var(--purple)">Divide by 14</div>
+          <div class="step-detail">Even cycle = Week 1, Odd = Week 2</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-text" style="color:var(--amber)">Return correct zones</div>
+          <div class="step-detail">Week 1 or Week 2 schedule</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn">
+      <span class="warn-icon">&#9888;</span>
+      <span class="warn-text"><strong>Anchor date matters.</strong> If the anchor date is changed in the schedule settings, it shifts which week is "Week 1." This affects all next-date calculations. Only change this if you understand the impact.</span>
+    </div>
+  </div>
+
+  <!-- 6. MANAGING THE SCHEDULE -->
+  <div class="section" id="manage-schedule">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--coral-bg);border:1px solid var(--coral-border)">&#128736;</div>
+      <div><h2>Managing the Schedule</h2><div class="section-sub">Admin interface at /manage-schedule</div></div>
+    </div>
+    <p class="desc">
+      The <code>/manage-schedule</code> page is where admins add, remove, and reorganise service zones. Changes save to Vercel Blob Storage and take effect immediately for all API lookups.
+    </p>
+
+    <div class="sub-heading">Step-by-Step: Adding a New Postcode</div>
+    <div class="flow">
+      <div class="flow-title">Add a Suburb to a Day</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text" style="color:var(--green)">Go to /manage-schedule</div>
+          <div class="step-detail">Opens the admin editor</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-text" style="color:var(--blue)">Select Week 1 or Week 2</div>
+          <div class="step-detail">Toggle at top of page</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-text" style="color:var(--purple)">Find the day's zone</div>
+          <div class="step-detail">e.g. Monday's zone</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-text" style="color:var(--amber)">Type suburb or postcode</div>
+          <div class="step-detail">Autocomplete suggests matches</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">5</div>
+          <div class="step-text" style="color:var(--coral)">Click Save All Changes</div>
+          <div class="step-detail">Persists to Vercel Blob</div>
+        </div>
+      </div>
+    </div>
+
+    <ul class="feature-list">
+      <li><span class="feat-icon">&#128269;</span> <strong>Suburb Autocomplete</strong> &mdash; Type a suburb name (e.g. "Elanora") and it suggests matching suburbs with their postcodes. Select to add.</li>
+      <li><span class="feat-icon">&#128506;</span> <strong>Interactive Map</strong> &mdash; Leaflet map with colour-coded service areas. Click on the map to select areas visually. Each day has its own colour.</li>
+      <li><span class="feat-icon">&#128465;</span> <strong>Remove Areas</strong> &mdash; Click the X next to any suburb/postcode to remove it from a day's zone.</li>
+      <li><span class="feat-icon">&#128257;</span> <strong>Week Toggle</strong> &mdash; Switch between Week 1 and Week 2 to configure alternate-week schedules.</li>
+      <li><span class="feat-icon">&#128190;</span> <strong>Save</strong> &mdash; All changes are saved to Vercel Blob Storage. Changes are live immediately &mdash; the next API call will use the updated schedule.</li>
+    </ul>
+
+    <div class="tip">
+      <span class="tip-icon">&#9432;</span>
+      <span class="tip-text"><strong>Test after saving.</strong> After adding new postcodes, verify them by calling <code>/api/check-availability?postcode=XXXX</code> in your browser or asking Tom in the chat widget.</span>
+    </div>
+
+    <div class="warn">
+      <span class="warn-icon">&#9888;</span>
+      <span class="warn-text">The <strong>/manage-schedule</strong> page is currently publicly accessible (no authentication). Anyone with the URL can edit the schedule. Consider bookmarking it but not sharing the link publicly.</span>
+    </div>
+  </div>
+
+  <!-- 7. SERVICE ZONES -->
+  <div class="section" id="service-zones">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--blue-bg);border:1px solid var(--blue-border)">&#127759;</div>
+      <div><h2>Service Zones</h2><div class="section-sub">Geographic coverage by day</div></div>
+    </div>
+    <p class="desc">
+      Service zones group suburbs and postcodes into daily routes. Each weekday covers a different geographic cluster to minimise travel time between jobs.
+    </p>
+    <div class="concept-row">
+      <div class="concept-card card-green">
+        <h3>Monday: Northern Beaches Central</h3>
+        <p>Elanora Heights, Narrabeen, North Narrabeen<br>Postcodes: 2101, 2102</p>
+        <span class="badge" style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)">Zone 1</span>
+      </div>
+      <div class="concept-card card-blue">
+        <h3>Tuesday: Upper North Shore</h3>
+        <p>Lindfield, Killara, Pymble<br>Postcodes: 2070, 2071, 2073</p>
+        <span class="badge" style="background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)">Zone 2</span>
+      </div>
+      <div class="concept-card card-purple">
+        <h3>Wednesday: Northern Beaches North</h3>
+        <p>Mona Vale, Bayview, Newport<br>Postcodes: 2103, 2104, 2105</p>
+        <span class="badge" style="background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)">Zone 3</span>
+      </div>
+    </div>
+    <div class="concept-row">
+      <div class="concept-card card-amber">
+        <h3>Thursday: Lower North Shore</h3>
+        <p>Chatswood, Castlecrag, Roseville<br>Postcodes: 2067, 2068, 2069</p>
+        <span class="badge" style="background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)">Zone 4</span>
+      </div>
+      <div class="concept-card card-coral">
+        <h3>Friday: Palm Beach / Peninsula</h3>
+        <p>Bilgola, Avalon, Palm Beach<br>Postcodes: 2106, 2107, 2108</p>
+        <span class="badge" style="background:var(--coral-bg);color:var(--coral);border:1px solid var(--coral-border)">Zone 5</span>
+      </div>
+    </div>
+    <div class="tip">
+      <span class="tip-icon">&#9432;</span>
+      <span class="tip-text">These are the <strong>default Week 1 zones</strong>. Week 2 can be configured differently via <code>/manage-schedule</code> for fortnightly rotation. The extended coverage area includes Eastern Suburbs, Greater Western Sydney, and Central Coast.</span>
+    </div>
+  </div>
+
+  <!-- 8. GHL AI INTEGRATION -->
+  <div class="section" id="ghl-integration">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--rose-bg);border:1px solid var(--rose-border)">&#129302;</div>
+      <div><h2>GHL AI Integration</h2><div class="section-sub">Tom, the virtual assistant</div></div>
+    </div>
+    <p class="desc">
+      The site embeds GHL's Conversation AI widget as a floating chat orb. The AI assistant ("Tom") handles voice calls, text chat, postcode lookups, and booking. Tom calls the geo API endpoints behind the scenes to answer availability questions.
+    </p>
+
+    <div class="sub-heading">What Tom Can Do</div>
+    <ul class="feature-list">
+      <li><span class="feat-icon">&#128205;</span> <strong>Check postcode availability</strong> &mdash; "Do you service 2101?" triggers a call to <code>/api/check-availability</code></li>
+      <li><span class="feat-icon">&#128197;</span> <strong>List areas by day</strong> &mdash; "What areas do you cover on Tuesday?" triggers <code>/api/areas-by-day</code></li>
+      <li><span class="feat-icon">&#128222;</span> <strong>Voice calls</strong> &mdash; 24/7 voice AI on +61 468 170 318</li>
+      <li><span class="feat-icon">&#128172;</span> <strong>Web chat</strong> &mdash; Click the floating orb (bottom right) to start typing</li>
+      <li><span class="feat-icon">&#128197;</span> <strong>Book appointments</strong> &mdash; Connects to GHL booking calendar</li>
+      <li><span class="feat-icon">&#10067;</span> <strong>Answer general questions</strong> &mdash; Pricing, services, team info</li>
+    </ul>
+
+    <div class="sub-heading">How Tom Uses the API</div>
+    <div class="flow">
+      <div class="flow-title">Voice Call Example</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-num">1</div>
+          <div class="step-text" style="color:var(--green)">Customer calls</div>
+          <div class="step-detail">+61 468 170 318</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">2</div>
+          <div class="step-text" style="color:var(--blue)">Says "I'm in 2101"</div>
+          <div class="step-detail">GHL extracts postcode</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">3</div>
+          <div class="step-text" style="color:var(--purple)">API returns match</div>
+          <div class="step-detail">Monday, Elanora Heights</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">4</div>
+          <div class="step-text" style="color:var(--amber)">Tom responds</div>
+          <div class="step-detail">"We service your area Mondays!"</div>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-step">
+          <div class="step-num">5</div>
+          <div class="step-text" style="color:var(--coral)">Offers to book</div>
+          <div class="step-detail">Opens GHL calendar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. SERVICES & PRICING -->
+  <div class="section" id="services">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--green-bg);border:1px solid var(--green-border)">&#127807;</div>
+      <div><h2>Services &amp; Pricing</h2><div class="section-sub">What Rob's Gardens offers</div></div>
+    </div>
+    <table class="ref-table">
+      <thead>
+        <tr><th>Service</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Lawn Care &amp; Mowing</td><td>Professional mowing, edging, and lawn maintenance</td></tr>
+        <tr><td>Hedge Trimming</td><td>Precise hedge shaping and boundary maintenance</td></tr>
+        <tr><td>Pruning &amp; Weeding</td><td>Expert plant care and year-round garden health</td></tr>
+        <tr><td>Seasonal Garden Care</td><td>Mulching, spring prep, and seasonal maintenance</td></tr>
+        <tr><td>Green Waste &amp; Clearing</td><td>Garden cleanup and eco-friendly waste disposal</td></tr>
+        <tr><td>Hard Surface Cleaning</td><td>Waterblasting patios, paths, and driveways</td></tr>
+        <tr><td>Garden Makeovers</td><td>Complete transformations, planting, and repairs</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">Pricing Tiers</div>
+    <table class="ref-table">
+      <thead>
+        <tr><th>Tier</th><th>Rate</th><th>Details</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Regular Maintenance</td><td>$150/hour</td><td>2-person team, all standard services</td></tr>
+        <tr><td>Pre-Sale Makeover</td><td>$2K &ndash; $4K</td><td>Typical 3&ndash;4 day property transformation</td></tr>
+        <tr><td>Ride-On Mower Service</td><td>$175</td><td>Per service with operator</td></tr>
+        <tr><td>Ride-On Mower Dry Hire</td><td>$200/day</td><td>Mon&ndash;Thu, self-operated</td></tr>
+        <tr><td>Ride-On Mower Weekend</td><td>$300 &ndash; $400</td><td>Fri&ndash;Sun hire</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 10. BOOKING FLOW -->
+  <div class="section" id="booking">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--amber-bg);border:1px solid var(--amber-border)">&#128197;</div>
+      <div><h2>Booking Flow</h2><div class="section-sub">How customers book a service</div></div>
+    </div>
+    <p class="desc">All bookings are handled through GHL's system. The website provides multiple entry points.</p>
+    <div class="concept-row">
+      <div class="concept-card card-green">
+        <h3>AI Chat (Tom)</h3>
+        <p>Click the floating orb or "Chat with Tom" button. Voice and text supported 24/7. Tom checks availability and connects to the booking calendar.</p>
+        <span class="badge" style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)">24/7</span>
+      </div>
+      <div class="concept-card card-blue">
+        <h3>Phone Call</h3>
+        <p>Call +61 468 170 318. Tom answers via GHL voice AI. Can check postcodes, discuss services, and schedule appointments.</p>
+        <span class="badge" style="background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)">Voice AI</span>
+      </div>
+      <div class="concept-card card-purple">
+        <h3>Contact Form</h3>
+        <p>Fill in name, email, phone, and message at the bottom of the page. Submits to GHL CRM as a lead. Team follows up within 24 hours.</p>
+        <span class="badge" style="background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)">Lead Gen</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. PAGES & NAVIGATION -->
+  <div class="section" id="pages">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--slate-bg);border:1px solid var(--slate-border)">&#128466;</div>
+      <div><h2>Pages &amp; Navigation</h2><div class="section-sub">Site structure</div></div>
+    </div>
+    <table class="ref-table">
+      <thead>
+        <tr><th>Page</th><th>URL</th><th>Access</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Landing Page</td><td>/</td><td>Public</td><td>Hero, services, pricing, testimonials, contact, chat widget</td></tr>
+        <tr><td>Public Schedule</td><td>/schedule</td><td>Public</td><td>View the current 2-week service schedule in table format</td></tr>
+        <tr><td>Manage Schedule</td><td>/manage-schedule</td><td>Admin</td><td>Edit zones, postcodes, and areas with interactive map</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 12. API REFERENCE -->
+  <div class="section" id="api-reference">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--teal-bg);border:1px solid var(--teal-border)">&#128268;</div>
+      <div><h2>API Reference</h2><div class="section-sub">All three endpoints at a glance</div></div>
+    </div>
+    <table class="ref-table">
+      <thead>
+        <tr><th>Endpoint</th><th>Method</th><th>Parameters</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>/api/check-availability</td><td>GET / POST</td><td><code>postcode</code> (string)</td><td>Check if a postcode is in a service zone and get next date</td></tr>
+        <tr><td>/api/areas-by-day</td><td>GET / POST</td><td><code>day</code> (string, e.g. "Monday")</td><td>List all suburbs and postcodes for a given day</td></tr>
+        <tr><td>/api/save-schedule</td><td>POST</td><td><code>schedule</code> (JSON object)</td><td>Save updated schedule to Vercel Blob Storage (admin)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-heading">Data Storage</div>
+    <ul class="feature-list">
+      <li><span class="feat-icon">&#9729;</span> <strong>Primary: Vercel Blob Storage</strong> &mdash; File <code>robs-garden-schedule.json</code>. Updated by <code>/api/save-schedule</code>. Read by both lookup endpoints.</li>
+      <li><span class="feat-icon">&#128196;</span> <strong>Fallback: data/zones.json</strong> &mdash; Static file in the repo. Used automatically if Blob Storage is unavailable. Requires manual update.</li>
+      <li><span class="feat-icon">&#128205;</span> <strong>Postcode database: 2000+ entries</strong> &mdash; Maps postcodes to suburb names and coordinates. Powers the autocomplete and map features.</li>
+    </ul>
+  </div>
+
+  <!-- 13. CONTACT & SUPPORT -->
+  <div class="section" id="contact">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--green-bg);border:1px solid var(--green-border)">&#128222;</div>
+      <div><h2>Contact &amp; Support</h2><div class="section-sub">How to reach Rob's Gardens</div></div>
+    </div>
+    <table class="ref-table">
+      <thead>
+        <tr><th>Channel</th><th>Details</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Phone</td><td>+61 468 170 318 (AI answers 24/7, team Mon&ndash;Sat 7am&ndash;5pm)</td></tr>
+        <tr><td>Email</td><td>info@robgarden.com.au</td></tr>
+        <tr><td>SMS</td><td>+61 468 170 318</td></tr>
+        <tr><td>AI Chat</td><td>Floating orb on the website (voice &amp; text)</td></tr>
+        <tr><td>Web Form</td><td>Contact section at bottom of landing page</td></tr>
+        <tr><td>Service Area</td><td>Greater Sydney: Northern Beaches, North Shore, Eastern Suburbs, Western Sydney, Central Coast</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

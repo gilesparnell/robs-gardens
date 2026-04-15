@@ -1,73 +1,45 @@
-# Welcome to your Lovable project
+# Rob Gardening & Maintenance
 
-## Project info
+Marketing website and admin panel for Rob Gardening & Maintenance, a Northern Beaches (Sydney) garden services business. React + Vite + shadcn-ui SPA deployed on Vercel with a small serverless API for schedule queries.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Local development
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Requires Node.js (use nvm: https://github.com/nvm-sh/nvm).
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+npm install
+npm run dev          # dev server on :3000
+npm test             # run the test suite once
+npm run lint         # eslint
+npm run build        # production build to dist/
 ```
 
-**Edit a file directly in GitHub**
+The dev server proxies `/api/*` to `http://localhost:3001`. To run the full stack locally:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+# Terminal 1: dev server
+npm run dev
 
-**Use GitHub Codespaces**
+# Terminal 2: Vercel functions
+npx vercel dev --listen 3001
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Tech stack
 
-## What technologies are used for this project?
+- Vite + React 18 + TypeScript
+- shadcn-ui + Tailwind CSS
+- React Router v6
+- Vitest + Testing Library for tests
+- Vercel serverless functions for the schedule API
+- Vercel Blob for persisted schedule data
 
-This project is built with:
+## Documentation
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- Project conventions and deviations from global rules: [`CLAUDE.md`](./CLAUDE.md)
+- User guide (customer-facing): [`docs/user-guide.html`](./docs/user-guide.html)
+- Active rollout plan: [`docs/plans/2026-04-13-001-feat-seo-geo-rollout-beta-plan.md`](./docs/plans/2026-04-13-001-feat-seo-geo-rollout-beta-plan.md)
+- Changelog: [`CHANGELOG.md`](./CHANGELOG.md)
 
-## How can I deploy this project?
+## Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Production auto-deploys from `main` on Vercel. Preview deployments are gated behind Vercel Deployment Protection; production is not.

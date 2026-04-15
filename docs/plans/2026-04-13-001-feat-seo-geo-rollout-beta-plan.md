@@ -519,9 +519,17 @@ User navigates to /admin
 
 ### Phase 2 — Code-heavy hardening (admin auth, prerendering, semantics)
 
-- [ ] **Unit 11: Rename `/manage-schedule` → `/admin` and add Google Identity Services auth gate**
+- [ ] **Unit 11: Build `/admin` dashboard + Google Identity Services auth gate**
 
-**Goal:** The admin page lives at `/admin` — a short, bookmarkable URL Rob can remember — and requires a signed-in Google account whose email is in `ADMIN_EMAILS`. Unauthorised access shows a sign-in screen; authorised access shows the existing schedule management UI. The legacy `/manage-schedule` path no longer exists (it 404s via the existing NotFound route).
+**Scope (revised 2026-04-15):** `/admin` is now a **dashboard landing page** with navigation to two sub-sections, not a direct rename of the schedule page:
+
+- `/admin` — dashboard with two cards: "Manage Schedule" and "Manage Users"
+- `/admin/schedule` — the existing schedule management UI (renamed from `/manage-schedule`)
+- `/admin/users` — a new page showing the current admin allowlist (read-only from `ADMIN_EMAILS` env), with instructions for adding/removing admins via the Vercel dashboard. A proper in-app edit flow with role-based permissions is deferred to a future phase.
+
+All three sub-routes sit behind the same auth gate and require a signed-in Google account whose email is in `ADMIN_EMAILS`.
+
+**Goal:** The admin area lives at `/admin` — a short, bookmarkable URL Rob can remember. The dashboard makes the sub-sections discoverable without making users type URLs. Unauthorised access to any `/admin*` route shows a sign-in screen; authorised access shows the requested page. The legacy `/manage-schedule` path no longer exists (it 404s via the existing NotFound route).
 
 **Requirements:** R4
 

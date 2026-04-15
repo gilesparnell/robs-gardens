@@ -13,6 +13,37 @@ Each entry is split into:
 
 ---
 
+## [1.3.0] — 2026-04-15
+
+### What's new
+- The old `/manage-schedule` admin route is gone. In its place is a proper `/admin` area with a dashboard and navigation to two sub-sections: **Manage Schedule** (the existing rotating-crew schedule editor) and **Manage Users** (view the current admin allowlist). The dashboard is the landing page — users don't need to remember sub-URLs.
+- The admin area now requires signing in with a Google account. Only emails on an allowlist can get through, everyone else sees a friendly 403. Random visitors can no longer reach the schedule editor by guessing the URL.
+- Signing out is one click in the top-right of the admin dashboard.
+
+### Under the hood
+- Added `@react-oauth/google` and `jose` as runtime dependencies.
+- New core auth module: `src/lib/auth.ts` — pure functions for Google ID token verification (against Google's JWKS, with an injectable source for tests), allowlist parsing, HMAC session signing/verification, and cookie building. Fully unit-tested in `src/lib/auth.test.ts` (16 tests, runs under `// @vitest-environment node` because jose's Uint8Array instance checks don't cross the jsdom realm boundary).
+- New Vercel serverless handlers in `api/auth/`:
+  - `verify.ts` — POST `{idToken}` → verifies the Google ID token, checks the email against `ADMIN_EMAILS`, signs a session JWT with `SESSION_SECRET`, sets an HTTP-only `rg_session` cookie.
+  - `me.ts` — GET → reads the cookie, verifies the session, returns `{signedIn, email, adminEmails}`.
+  - `signout.ts` — POST → clears the session cookie.
+- New React surface:
+  - `src/components/RequireAdmin.tsx` — gate wrapper. Calls `/api/auth/me` on mount, renders a loading state, then either the sign-in screen or the children. Exports an `AuthContext` for children to read current user and allowlist.
+  - `src/components/SignInWithGoogle.tsx` — `@react-oauth/google` provider + button. Handles the token handoff to `/api/auth/verify` and surfaces errors (e.g. "your email is not on the allowlist").
+  - `src/lib/authClient.ts` — browser-side `fetchMe()`, `postVerify()`, `postSignOut()` helpers with `credentials: include`.
+- New admin pages under `src/pages/admin/`:
+  - `AdminDashboard.tsx` — landing dashboard with two cards and a sign-out button.
+  - `AdminUsers.tsx` — read-only allowlist view with instructions for editing via the Vercel dashboard. Role-based permissions deferred.
+  - `AdminSchedule.tsx` — renamed from the old `src/pages/ManageSchedule.tsx` (git-mv preserves history). Internal nav `navigate('/')` calls now route back to `/admin`. Import paths adjusted for the new directory depth.
+- `src/App.tsx` — replaced the single `/manage-schedule` route with three new auth-gated routes (`/admin`, `/admin/users`, `/admin/schedule`) wrapped in `<RequireAdmin>`.
+- `public/robots.txt` — removed the dead `Disallow: /manage-schedule` line (route no longer exists). `Disallow: /admin` retained.
+- `.env.example` — documented `VITE_GOOGLE_CLIENT_ID`, `ADMIN_EMAILS`, `SESSION_SECRET`.
+- Vercel env vars set via CLI: `VITE_GOOGLE_CLIENT_ID`, `ADMIN_EMAILS`, and `SESSION_SECRET` added for **Production** and **Development** targets. **Preview target not set** — a CLI quirk in the current Vercel CLI version couldn't resolve the "all Preview branches" prompt non-interactively. Feature-branch preview deploys will need these three env vars added manually via the Vercel dashboard OR the CLI in an interactive shell before the admin sign-in will work on a preview URL. Production is unaffected.
+- `docs/plans/2026-04-13-001-feat-seo-geo-rollout-beta-plan.md` — Unit 11 scope updated in-place to reflect the dashboard expansion (previously just a direct rename of `/manage-schedule` → `/admin`).
+- Test suite: 65 → 89 tests (added 16 auth.ts unit tests plus the 8 h1-semantics tests from 1.1.0). All green.
+
+---
+
 ## [1.2.0] — 2026-04-15
 
 ### What's new

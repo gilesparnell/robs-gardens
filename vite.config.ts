@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { readFileSync } from "node:fs";
 import { execSync } from "node:child_process";
-import { componentTagger } from "lovable-tagger";
 
 const pkg = JSON.parse(readFileSync("./package.json", "utf8")) as { version: string };
 
@@ -35,7 +34,7 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [react()],
   define: {
     __APP_SEMVER__: JSON.stringify(pkg.version),
     __APP_VERSION__: JSON.stringify(gitSha),

@@ -13,6 +13,27 @@ Each entry is split into:
 
 ---
 
+## [1.4.0] — 2026-04-16
+
+### What's new
+- Four new suburb landing pages: **Mosman**, **Rose Bay**, **Clontarf** and **Terrey Hills**. Each one is written specifically for that suburb — local landmarks, what's different about gardens in that area, the kind of work Rob actually does there. Not templated copy with the suburb name swapped in.
+- Anyone searching "garden maintenance Mosman", "Rose Bay gardener", "Clontarf hedge trimming" or "Terrey Hills ride-on mowing" now lands on a page that's actually about their suburb, instead of the generic homepage.
+- Each suburb page carries its own per-suburb structured data (address, geo coordinates, area served) so Google, ChatGPT, Claude and Perplexity can quote accurate local info when answering "who does gardening in <suburb>".
+- Sitemap and llms.txt now list all four suburb pages so crawlers and AI answer engines can discover them in one hop.
+
+### Under the hood
+- New content authoring model: each suburb is an `.md` file under `src/content/suburbs/` with YAML frontmatter (name, slug, postcode, centroid lat/lng, region, neighbours, meta title/description, primary service) plus a markdown body. Edit in any text editor, no TypeScript touching.
+- New data loader: `src/content/suburbs/index.ts` uses Vite's `import.meta.glob` with `?raw` to pull every `.md` file at build time, parses frontmatter with a **lightweight homegrown parser** (no `gray-matter` — grey-matter uses `eval` internally which crashes in browser bundles), exposes `getAllSuburbs`, `getSuburbBySlug`, `getSuburbSlugs`. Fully unit-tested in `suburbs.test.ts` (14 tests covering loader + content invariants: word count, keyword density, unique slugs, valid lat/lng).
+- New page component: `src/pages/SuburbPage.tsx` — reads the slug from `useParams`, looks up the entry, renders the body via `react-markdown` + `remark-gfm`, injects a per-suburb `LocalBusiness` JSON-LD schema block, sets document.title, meta description, og tags and canonical via `useEffect`. Links to neighbouring suburbs that also have pages.
+- `src/App.tsx` — added `<Route path="/gardening/:slug" element={<SuburbPage />} />`.
+- `vite.config.ts` — `PRERENDER_ROUTES` is now derived from `readdirSync("./src/content/suburbs")`, so adding a new `.md` file auto-adds its prerender route. No config edit needed per new suburb.
+- `public/sitemap.xml` and `public/llms.txt` updated to list the four suburb URLs.
+- New runtime dependencies: `react-markdown` (^10), `remark-gfm` (^4). `gray-matter` was installed and then removed once the eval-in-bundle issue surfaced.
+- Build time on `vite build` grows to ~9 s (from ~7 s) because puppeteer has to prerender 6 routes instead of 2. `dist/gardening/<slug>/index.html` files are each ~39 kB prerendered.
+- **Rollout note**: four flagship suburbs chosen deliberately (Mosman + Rose Bay + Clontarf + Terrey Hills) to cover Lower North Shore, Eastern Suburbs, and two distinct Northern Beaches characters (harbourside vs acreage). The framework supports any number of suburbs — adding the remaining 10 from the plan is a content-only exercise: write the `.md` file, commit, done.
+
+---
+
 ## [1.3.0] — 2026-04-15
 
 ### What's new

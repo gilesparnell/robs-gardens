@@ -1,14 +1,24 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { execSync } from "node:child_process";
 import prerender from "@prerenderer/rollup-plugin";
 import PuppeteerRenderer from "@prerenderer/renderer-puppeteer";
 
 const pkg = JSON.parse(readFileSync("./package.json", "utf8")) as { version: string };
 
-const PRERENDER_ROUTES = ["/", "/schedule"];
+// Derive suburb routes from the markdown files on disc so the config and
+// the runtime loader stay in sync. One .md file = one /gardening/<slug> route.
+const suburbSlugs = readdirSync("./src/content/suburbs")
+  .filter((f) => f.endsWith(".md"))
+  .map((f) => f.replace(/\.md$/, ""));
+
+const PRERENDER_ROUTES = [
+  "/",
+  "/schedule",
+  ...suburbSlugs.map((slug) => `/gardening/${slug}`),
+];
 
 const gitSha = (() => {
   try {
@@ -24,19 +34,27 @@ const gitSha = (() => {
 // On Vercel/Linux serverless builds, puppeteer's bundled Chromium is missing
 // system libs (libnspr4.so et al). Use @sparticuz/chromium — a Chromium build
 // packaged for AWS Lambda / Vercel serverless — by overriding puppeteer's
-// launch options. Local Mac builds keep using puppeteer's default Chromium.
-async function resolveLaunchOptions() {
-  const isVercel = process.env.VERCEL === "1";
-  if (!isVercel) {
-    return { headless: true, args: ["--no-sandbox", "--disable-setuid-sandbox"] };
-  }
-  const { default: chromium } = await import("@sparticuz/chromium");
-  const executablePath = await chromium.executablePath();
-  return {
+// executable path via launchOptions. Local Mac builds keep the top-level
+// options shape that works with puppeteer's default Chromium.
+async function buildRendererOptions() {
+  const base: Record<string, unknown> = {
+    renderAfterTime: 5000,
     headless: true,
-    executablePath,
-    args: chromium.args,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
   };
+
+  if (process.env.VERCEL === "1") {
+    const { default: chromium } = await import("@sparticuz/chromium");
+    base.launchOptions = {
+      executablePath: await chromium.executablePath(),
+      args: chromium.args,
+      headless: "new",
+    };
+    // Drop the top-level args so launchOptions.args takes effect unambiguously.
+    delete base.args;
+  }
+
+  return base;
 }
 
 // https://vitejs.dev/config/
@@ -44,14 +62,11 @@ export default defineConfig(async ({ mode }) => {
   const plugins: unknown[] = [react()];
 
   if (mode === "production") {
-    const launchOptions = await resolveLaunchOptions();
+    const rendererOptions = await buildRendererOptions();
     plugins.push(
       prerender({
         routes: PRERENDER_ROUTES,
-        renderer: new PuppeteerRenderer({
-          renderAfterTime: 2500,
-          launchOptions,
-        }) as unknown as never,
+        renderer: new PuppeteerRenderer(rendererOptions) as unknown as never,
       }),
     );
   }

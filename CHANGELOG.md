@@ -13,6 +13,21 @@ Each entry is split into:
 
 ---
 
+## [1.1.0] — 2026-04-15
+
+### What's new
+- The homepage now leads with a proper headline: **"Garden Maintenance & Lawn Care"** in the biggest text on the page, followed by the full list of service areas (Greater Sydney, Northern Beaches, Eastern Suburbs, Greater Western Sydney, Central Coast). Search engines use this headline directly when deciding how to show Rob in results.
+- "The Art of Green Care" is now a styled tagline underneath the main headline, instead of competing with it as the primary heading.
+
+### Under the hood
+- `src/components/Hero.tsx` — the hero `<h2>` becomes the real `<h1>`, containing the primary keyword ("Garden Maintenance & Lawn Care") as the biggest visual element and the service-area list as a secondary line within the same heading. Removed the now-duplicate service-area pill from above the heading. "The Art of Green Care" becomes a separate styled tagline below.
+- `src/components/Header.tsx` — the brand `<h1>` demotes to a `<div>`. The parent anchor carries an `aria-label="Rob Gardening and Maintenance"` so screen readers still announce the brand. Logo `alt` is now empty (decorative) because the link is now labelled.
+- Added `src/components/Hero.test.tsx` (5 tests) asserting exactly one `<h1>`, that it contains "Garden Maintenance & Lawn Care", "Northern Beaches", "Central Coast", and that the "The Art of Green Care" tagline still renders.
+- Added `src/components/Header.test.tsx` (3 tests) asserting zero `<h1>`s in the header, that the brand is still accessible via `aria-label`, and that the visible brand text is still rendered for sighted users.
+- Test suite grows from 65 to 73 tests, all green.
+
+---
+
 ## [1.0.0] — 2026-04-15
 
 First tagged release. The site now has a proper search and AI-answer-engine footprint, a cleaner page title, richer business schema, and a visible version marker in the footer so you can tell at a glance which build is live.

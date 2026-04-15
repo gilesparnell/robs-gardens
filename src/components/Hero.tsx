@@ -10,8 +10,6 @@ const features = [
 ];
 
 export const Hero = () => {
-  const serviceAreaText = 'Servicing Greater Sydney area, Northern Beaches, Eastern Suburbs, Greater Western Sydney, Central Coast';
-
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -31,16 +29,18 @@ export const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 bg-primary-foreground/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="text-sm text-primary-foreground/90">{serviceAreaText}</span>
-            </div>
+            <h1 className="font-serif text-primary-foreground leading-tight mb-4">
+              <span className="block text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold">
+                Garden Maintenance &amp; Lawn Care
+              </span>
+              <span className="block mt-4 text-base md:text-lg lg:text-xl font-normal text-primary-foreground/85">
+                Greater Sydney area — Northern Beaches, Eastern Suburbs, Greater Western Sydney, Central Coast
+              </span>
+            </h1>
 
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-foreground leading-tight mb-6">
-              The Art of
-              <br />
-              <span className="italic">Green Care</span>
-            </h2>
+            <p className="italic font-serif text-primary-foreground/80 text-2xl md:text-3xl lg:text-4xl mb-6">
+              The Art of Green Care
+            </p>
 
             <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-xl">
               3 dedicated teams delivering expert garden maintenance, specialising in pre-sale property makeovers, and complete outdoor transformations.

@@ -13,6 +13,23 @@ Each entry is split into:
 
 ---
 
+## [1.2.0] — 2026-04-15
+
+### What's new
+- Googlebot, ChatGPT, Claude, Perplexity and other search/answer engines now receive real, fully-rendered HTML on the first request instead of an empty application shell. The headline, service list, schema and all body content are present the moment a crawler asks for the page.
+- Anyone viewing the page source — including potential customers doing "view source" to sanity-check the site — sees proper content instead of a blank white page template.
+
+### Under the hood
+- Added `@prerenderer/rollup-plugin` and `@prerenderer/renderer-puppeteer` as devDependencies.
+- `vite.config.ts` registers the prerender plugin in `production` mode only. Routes prerendered: `/` and `/schedule`. `/admin` and its sub-routes are deliberately excluded (auth-gated, zero SEO value).
+- Puppeteer is configured with `renderAfterTime: 2500` (ms) to give framer-motion animations time to settle before the snapshot is taken, and launched with `--no-sandbox --disable-setuid-sandbox` so it works in CI/Vercel environments without a sandbox.
+- `dist/index.html` grows from ~5.6 kB (application shell) to ~127 kB (fully rendered) after this change. `dist/schedule/index.html` is created as a separate file by the plugin.
+- Build time on `vite build` grows from ~2 s to ~14 s because of the Chromium startup overhead. Dev mode (`npm run dev`) is unaffected.
+- **Known risk:** Vercel's build environment needs to be able to download and launch Puppeteer's bundled Chromium. If the build fails there, the fallback is a custom post-build Node script using `ReactDOMServer.renderToStaticMarkup` (deferred to implementation time).
+- Puppeteer's Chromium sometimes adds benign framework-detection classes (`plt-tablet plt-desktop md`) to the `<html>` element in the rendered output. These are cosmetic and do not affect SEO or rendering.
+
+---
+
 ## [1.1.0] — 2026-04-15
 
 ### What's new

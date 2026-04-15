@@ -3,8 +3,12 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { readFileSync } from "node:fs";
 import { execSync } from "node:child_process";
+import prerender from "@prerenderer/rollup-plugin";
+import PuppeteerRenderer from "@prerenderer/renderer-puppeteer";
 
 const pkg = JSON.parse(readFileSync("./package.json", "utf8")) as { version: string };
+
+const PRERENDER_ROUTES = ["/", "/schedule"];
 
 const gitSha = (() => {
   try {
@@ -34,7 +38,18 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    mode === "production" &&
+      prerender({
+        routes: PRERENDER_ROUTES,
+        renderer: new PuppeteerRenderer({
+          renderAfterTime: 2500,
+          headless: true,
+          args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        }) as unknown as never,
+      }),
+  ].filter(Boolean),
   define: {
     __APP_SEMVER__: JSON.stringify(pkg.version),
     __APP_VERSION__: JSON.stringify(gitSha),

@@ -8,16 +8,16 @@ import { Badge } from '@/components/ui/badge';
 import { Save, ArrowLeft, Plus, Trash2, MapPin, Calendar, X, HelpCircle, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import initialZones from '../../data/zones.json';
-import { AU_POSTCODE_MAP, SUBURB_TO_POSTCODE } from '../lib/postcodeData';
+import initialZones from '../../../data/zones.json';
+import { AU_POSTCODE_MAP, SUBURB_TO_POSTCODE } from '../../lib/postcodeData';
 import { SuburbAutocomplete } from '@/components/SuburbAutocomplete';
 import { SelectAreaMap } from '@/components/SelectAreaMap';
 
-import type { Zone, RotatingSchedule } from '../../types/schedule';
+import type { Zone, RotatingSchedule } from '../../../types/schedule';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 
-export default function ManageSchedule() {
+export default function AdminSchedule() {
     const navigate = useNavigate();
     const [schedule, setSchedule] = useState<RotatingSchedule>({
         weeks: [{ week: 1, zones: [] }, { week: 2, zones: [] }],
@@ -172,7 +172,7 @@ export default function ManageSchedule() {
             });
             if (!response.ok) throw new Error('Failed to save');
             toast.success('Schedule updated successfully!');
-            setTimeout(() => navigate('/'), 1000);
+            setTimeout(() => navigate('/admin'), 1000);
         } catch (error) {
             toast.error('Failed to save schedule. Please try again or call support.');
         } finally {
@@ -185,7 +185,7 @@ export default function ManageSchedule() {
             <div className="container mx-auto px-4 max-w-5xl">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" onClick={() => navigate('/')} size="icon" className="rounded-full">
+                        <Button variant="ghost" onClick={() => navigate('/admin')} size="icon" className="rounded-full">
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
                         <h1 className="text-3xl font-serif font-bold">Manage Schedule</h1>

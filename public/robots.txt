@@ -34,7 +34,6 @@ Allow: /
 
 User-agent: *
 Allow: /
-Disallow: /manage-schedule
 Disallow: /admin
 
 Sitemap: https://www.robgardens.com.au/sitemap.xml

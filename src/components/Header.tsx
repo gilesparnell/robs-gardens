@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Phone, Menu, X } from 'lucide-react';
 
-import { Link } from 'react-router-dom';
-
 const navLinks = [
   { href: '#presales', label: 'Pre-Sale' },
   { href: '#services', label: 'Maintenance' },
@@ -29,7 +27,7 @@ export const Header = () => {
               <h1 className="font-serif text-lg font-semibold text-foreground leading-tight">
                 Rob Gardening
               </h1>
-              <p className="text-xs text-muted-foreground">& Maintenanc<Link to="/manage-schedule" className="hover:text-primary transition-colors cursor-default">e</Link></p>
+              <p className="text-xs text-muted-foreground">& Maintenance</p>
             </div>
           </a>
 

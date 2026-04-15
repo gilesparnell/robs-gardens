@@ -26,8 +26,8 @@ const baseContactInfo = [
     {
       icon: Mail,
       label: 'Email',
-      value: 'info@robgarden.com.au',
-      href: 'mailto:info@robgarden.com.au',
+      value: 'info@robgardens.com.au',
+      href: 'mailto:info@robgardens.com.au',
       description: 'We reply within 24 hours',
     },
     {

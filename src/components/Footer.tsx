@@ -1,4 +1,5 @@
 import { Phone, Mail, MapPin, Instagram, Facebook } from 'lucide-react';
+import { APP_VERSION_LABEL } from '@/lib/version';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -64,8 +65,8 @@ export const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-primary-foreground/70" />
-                <a href="mailto:info@robgarden.com.au" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
-                  info@robgarden.com.au
+                <a href="mailto:info@robgardens.com.au" className="text-sm text-primary-foreground/70 hover:text-primary-foreground transition-colors">
+                  info@robgardens.com.au
                 </a>
               </li>
               <li className="flex items-center gap-3">
@@ -75,7 +76,7 @@ export const Footer = () => {
             </ul>
             <div className="flex gap-4 mt-6">
               <a
-                href="https://www.instagram.com/rob_gardens?igsh=MXV2YXJlb2lvNHdlYQ=="
+                href="https://www.instagram.com/rob_gardens/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
@@ -84,7 +85,7 @@ export const Footer = () => {
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="https://www.facebook.com/share/1DTAx7wU9h/?mibextid=wwXIfr"
+                href="https://www.facebook.com/share/1DTAx7wU9h/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
@@ -100,13 +101,20 @@ export const Footer = () => {
           <p className="text-sm text-primary-foreground/60">
             &copy; {currentYear} Rob Gardening &amp; Maintenance. All rights reserved.
           </p>
-          <div className="flex gap-6">
+          <div className="flex items-center gap-6">
             <a href="#" className="text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">
               Privacy Policy
             </a>
             <a href="#" className="text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">
               Terms of Service
             </a>
+            <span
+              data-testid="app-version"
+              className="font-mono text-xs text-primary-foreground/40"
+              aria-label="Application version"
+            >
+              {APP_VERSION_LABEL}
+            </span>
           </div>
         </div>
       </div>

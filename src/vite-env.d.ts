@@ -13,3 +13,7 @@ interface ImportMeta {
 interface Window {
     gapi: any;
 }
+
+declare const __APP_SEMVER__: string;
+declare const __APP_VERSION__: string;
+declare const __BUILD_TIME__: string;
